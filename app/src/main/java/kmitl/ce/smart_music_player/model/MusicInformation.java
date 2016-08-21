@@ -5,11 +5,51 @@ package kmitl.ce.smart_music_player.model;
  */
 public class MusicInformation {
     private String title;
-    private String author;
+    private String artist;
     private int length;
-    private String thumbnail;
+    private byte[] thumbnail;
     private String path;
     private String fileName;
+    private String year;
+    private String album;
+
+    public void setAlbum(String album) {
+        this.album = album;
+    }
+
+    public String getAlbum() {
+
+        return album;
+    }
+
+    private String genre;
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public String getYear() {
+
+        return year;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    private String duration;
 
     public void setPath(String path) {
         this.path = path;
@@ -28,11 +68,11 @@ public class MusicInformation {
         return fileName;
     }
 
-    public void setThumbnail(String thumbnail) {
+    public void setThumbnail(byte[] thumbnail) {
         this.thumbnail = thumbnail;
     }
 
-    public String getThumbnail() {
+    public byte[] getThumbnail() {
 
         return thumbnail;
     }
@@ -41,8 +81,8 @@ public class MusicInformation {
         this.title = title;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setArtist(String author) {
+        this.artist = author;
     }
 
     public void setLength(int length) {
@@ -54,8 +94,8 @@ public class MusicInformation {
         return title;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getArtist() {
+        return artist;
     }
 
     public int getLength() {

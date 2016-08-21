@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:minHeight="0dp">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/music_playing_button"
             android:layout_width="50dp"
             android:layout_height="match_parent" />

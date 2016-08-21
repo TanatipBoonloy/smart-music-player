@@ -1,6 +1,8 @@
 package kmitl.ce.smart_music_player.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,10 +43,13 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
     public void onBindViewHolder(final MusicViewHolder holder, int position) {
         holder.textView.setText(musicInformationList.get(position).getTitle());
 
-        Picasso.with(mContext).load(musicInformationList.get(position).getThumbnail())
-                .error(R.drawable.musical_note)
-                .placeholder(R.drawable.musical_note)
-                .into(holder.imageView);
+        byte[] thumbnail = musicInformationList.get(position).getThumbnail();
+        Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail,0,thumbnail.length);
+        holder.imageView.setImageBitmap(bitmap);
+//        Picasso.with(mContext).load(bitmap)
+//                .error(R.drawable.musical_note)
+//                .placeholder(R.drawable.musical_note)
+//                .into(holder.imageView);
 //        Picasso.with(mContext).load(R.drawable.musical_note).into(holder.imageView);
 //        holder.imageView.setImageDrawable(null);
 

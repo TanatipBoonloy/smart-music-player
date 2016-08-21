@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import kmitl.ce.smart_music_player.R;
 import kmitl.ce.smart_music_player.model.MusicInformation;
 
@@ -22,14 +24,19 @@ import kmitl.ce.smart_music_player.model.MusicInformation;
 public class MusicPlayingFragment extends DialogFragment{
     public static final String KEY_MESSAGE = "music_inform";
 
-    private String musicTitle;
+    private MusicInformation musicInformation;
 
-    public static MusicPlayingFragment newInstance(MusicInformation musicInformation){
+    public static MusicPlayingFragment newInstance(int arg,MusicInformation musicInformation){
         MusicPlayingFragment fragment = new MusicPlayingFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(KEY_MESSAGE,musicInformation.getAuthor());
+        bundle.putInt("count",arg);
         fragment.setArguments(bundle);
+        fragment.setMusicInformation(musicInformation);
         return fragment;
+    }
+
+    public void setMusicInformation(MusicInformation musicInformation){
+        this.musicInformation = musicInformation;
     }
 
     public MusicPlayingFragment(){}
@@ -37,11 +44,7 @@ public class MusicPlayingFragment extends DialogFragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Bundle bundle = getArguments();
-        if(bundle!=null){
-            musicTitle = bundle.getString(KEY_MESSAGE);
-        }
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -50,8 +53,11 @@ public class MusicPlayingFragment extends DialogFragment{
 //        return super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.music_playing_fragment,container,false);
 
-        TextView textView = (TextView)rootView.findViewById(R.id.song_name);
-        textView.setText(musicTitle);
+        TextView songNameView = (TextView)rootView.findViewById(R.id.song_name);
+        songNameView.setText(musicInformation.getTitle());
+
+        TextView artistNameView = (TextView) rootView.findViewById(R.id.song_artist);
+        artistNameView.setText(musicInformation.getArtist());
 
         ImageButton backBtn = (ImageButton)rootView.findViewById(R.id.back);
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +66,24 @@ public class MusicPlayingFragment extends DialogFragment{
                 getFragmentManager().popBackStack();
             }
         });
+
+        final ImageButton playButton = (ImageButton)rootView.findViewById(R.id.play);
+        Picasso.with(getActivity().getApplicationContext())
+                .load(((PlaylistActivity)getActivity()).getPlayStateImage())
+                .into(playButton);
+
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((PlaylistActivity)getActivity()).playStateClick(playButton);
+            }
+        });
         return rootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((PlaylistActivity)getActivity()).updatePlayButton(((PlaylistActivity)getActivity()).getMusicPlayingButton());
     }
 }

@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,6 +41,9 @@ public class PlaylistActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private int currentPosition;
 
+    private Integer playStateImage = null;
+    ImageButton musicPlayingButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +57,7 @@ public class PlaylistActivity extends AppCompatActivity {
 
         Toolbar musicListToolbar = (Toolbar) findViewById(R.id.music_list_toolbar);
         setSupportActionBar(musicListToolbar);
+        musicPlayingButton = (ImageButton) findViewById(R.id.music_playing_button);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -61,8 +67,8 @@ public class PlaylistActivity extends AppCompatActivity {
     }
 
     public void playSong(final MusicInformation musicInformation){
-        ImageView musicPlayingButton = (ImageView) findViewById(R.id.music_playing_button);
-        Picasso.with(this).load(R.drawable.pause_button).into(musicPlayingButton);
+        playStateImage = R.drawable.pause_button;
+        updatePlayButton(musicPlayingButton);
 
         TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
         musicPlayingTitle.setTextSize(20);
@@ -82,17 +88,23 @@ public class PlaylistActivity extends AppCompatActivity {
 //                transaction.addToBackStack(null);
 //                transaction.commit();
 
-                MusicPlayingFragment musicPlayingFragment = MusicPlayingFragment.newInstance(musicInformation);
+
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                Fragment prevFragment = getSupportFragmentManager().findFragmentByTag("musicPlayingDialog");
+                if(prevFragment!=null){
+                    ft.remove(prevFragment);
+                }
+
                 ft.addToBackStack(null);
-                musicPlayingFragment.show(ft,null);
+                MusicPlayingFragment musicPlayingFragment = MusicPlayingFragment.newInstance(1,musicInformation);
+                musicPlayingFragment.show(ft,"musicPlayingDialog");
             }
         });
 
         musicPlayingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playStateClick();
+                playStateClick(musicPlayingButton);
             }
         });
     }
@@ -135,8 +147,11 @@ public class PlaylistActivity extends AppCompatActivity {
     }
 
     public void play(MusicInformation musicInformation){
+
+        mediaPlayer.reset();
+
         try{
-            mediaPlayer.setDataSource(musicInformation.getPath() + File.separator + musicInformation.getFileName());
+            mediaPlayer.setDataSource(musicInformation.getPath());
             mediaPlayer.prepare();
             mediaPlayer.start();
         }
@@ -145,22 +160,34 @@ public class PlaylistActivity extends AppCompatActivity {
         }
     }
 
-    public void playStateClick(){
-        ImageView musicPlayingButton = (ImageView) findViewById(R.id.music_playing_button);
+    public void playStateClick(ImageButton imageButton){
         try{
             if(mediaPlayer.isPlaying()){
-                Picasso.with(PlaylistActivity.this).load(R.drawable.play_button).into(musicPlayingButton);
+                playStateImage = R.drawable.play_button;
                 mediaPlayer.pause();
                 currentPosition = mediaPlayer.getCurrentPosition();
             }
             else{
-                Picasso.with(PlaylistActivity.this).load(R.drawable.pause_button).into(musicPlayingButton);
+                playStateImage = R.drawable.pause_button;
                 mediaPlayer.seekTo(currentPosition);
                 mediaPlayer.start();
             }
+            updatePlayButton(imageButton);
         }
         catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void updatePlayButton(ImageButton imageButton){
+        Picasso.with(PlaylistActivity.this).load(playStateImage).into(imageButton);
+    }
+
+    public int getPlayStateImage(){
+        return playStateImage;
+    }
+
+    public ImageButton getMusicPlayingButton(){
+        return musicPlayingButton;
     }
 }
