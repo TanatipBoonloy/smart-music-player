@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:minHeight="10000dp"
     android:minWidth="10000dp">
 
@@ -11,15 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:weightSum="12">
-    <!--android:layout_alignParentTop="true"-->
-    <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentStart="true"-->
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
             android:layout_weight="1">
 
             <android.support.v7.widget.Toolbar
@@ -33,14 +31,16 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:weightSum="4">
                     <ImageButton
-                        android:layout_width="100dp"
-                        android:layout_height="60dp"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:id="@+id/back"
-                        android:src="@drawable/back2"
-                        android:paddingTop="15dp"
-                        android:layout_gravity="left"/>
+                        android:src="@drawable/back"
+                        android:paddingTop="0dp"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"/>
                 </LinearLayout>
 
 
@@ -52,10 +52,8 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
             android:layout_weight="6.1">
-            <ImageButton
+            <ImageView
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/imageView"
@@ -66,38 +64,33 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
             android:layout_weight="0.7">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Test Song Name"
                 android:layout_gravity="center"
-                android:textSize="30dp"
+                android:textSize="15dp"
                 android:id="@+id/song_name" />
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
             android:layout_weight="0.7">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Test Song Artist"
                 android:layout_gravity="center"
                 android:id="@+id/song_artist"
-                android:textSize="30dp"/>
+                android:textSize="10dp"/>
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
             android:layout_weight="0.5">
             <SeekBar
                 android:layout_width="match_parent"
@@ -108,8 +101,6 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
             android:layout_weight="0.5">
 
             <TextView
@@ -117,7 +108,7 @@
                 android:layout_height="match_parent"
                 android:text="00:00"
                 android:layout_gravity="left"
-                android:textSize="15dp"
+                android:textSize="10dp"
                 android:id="@+id/currentDurationLabel"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 />
@@ -127,9 +118,9 @@
                 android:layout_height="match_parent"
                 android:text="11:00"
                 android:layout_gravity="right"
-                android:textSize="15dp"
+                android:textSize="10dp"
                 android:id="@+id/totalDurationLabel"
-                android:paddingLeft="660dp"
+                android:paddingRight="16dp"
                 />
         </LinearLayout>
 
@@ -137,27 +128,25 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
             android:layout_weight="1.5">>
 
             <ImageButton
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="match_parent"
                 android:src="@drawable/fast_back"
                 android:id="@+id/previous"
                 android:layout_weight="0.2"/>
 
             <ImageButton
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="match_parent"
                 android:src="@drawable/play_button"
                 android:id="@+id/play"
                 android:layout_weight="0.2"/>
 
             <ImageButton
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="match_parent"
                 android:src="@drawable/fast_forward"
                 android:id="@+id/next"
                 android:layout_weight="0.2"/>
@@ -169,8 +158,6 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
             android:layout_weight="1">
 
             <android.support.v7.widget.Toolbar
@@ -188,10 +175,10 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentStart="true"
                     android:weightSum="1"
-                    android:paddingTop="10dp">
+                    android:paddingTop="3dp">
                     <ImageButton
                         android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_height="match_parent"
                         android:id="@+id/shuffle"
                         android:src="@drawable/shuffle_arrows"
                         android:layout_weight="0.5"
@@ -199,7 +186,7 @@
 
                     <ImageButton
                         android:layout_width="0dp"
-                        android:layout_height="60dp"
+                        android:layout_height="match_parent"
                         android:id="@+id/repeat"
                         android:src="@drawable/repeat_48"
                         android:layout_weight="0.5"
@@ -208,4 +195,4 @@
             </android.support.v7.widget.Toolbar>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

@@ -44,8 +44,13 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
         holder.textView.setText(musicInformationList.get(position).getTitle());
 
         byte[] thumbnail = musicInformationList.get(position).getThumbnail();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail,0,thumbnail.length);
-        holder.imageView.setImageBitmap(bitmap);
+        if(thumbnail != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
+            holder.imageView.setImageBitmap(bitmap);
+        }
+        else{
+            Picasso.with(mContext).load(R.drawable.musical_note).into(holder.imageView);
+        }
 //        Picasso.with(mContext).load(bitmap)
 //                .error(R.drawable.musical_note)
 //                .placeholder(R.drawable.musical_note)
