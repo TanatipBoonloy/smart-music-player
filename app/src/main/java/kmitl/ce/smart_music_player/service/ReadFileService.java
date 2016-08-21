@@ -47,6 +47,8 @@ public class ReadFileService {
         if(file.getName().endsWith(".mp3")){
             MusicInformation musicInformation = new MusicInformation();
             musicInformation.setTitle(file.getName());
+            musicInformation.setPath(file.getPath());
+            musicInformation.setFileName(file.getName());
 
             musicInformationList.add(musicInformation);
         }

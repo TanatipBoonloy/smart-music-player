@@ -2,6 +2,7 @@ package kmitl.ce.smart_music_player.ui;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -13,11 +14,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +36,8 @@ public class PlaylistActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private List<MusicInformation> musicInformationList;
     private ReadFileService readFileService;
+    private MediaPlayer mediaPlayer;
+    private int currentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +46,8 @@ public class PlaylistActivity extends AppCompatActivity {
 
         musicInformationList = new ArrayList<>();
         readFileService = new ReadFileService();
+        mediaPlayer = new MediaPlayer();
         getMusicList();
-//        List<MusicInformation> musicInformationList = new ArrayList<>();
-//        for(int i = 0  ; i < 20 ; i++){
-//            MusicInformation musicInformation = new MusicInformation();
-//            musicInformation.setTitle("name_" + i);
-//            musicInformation.setAuthor("author__" + i);
-//            musicInformation.setLength(4000+i*120);
-//            musicInformation.setThumbnail(null);
-//            musicInformationList.add(musicInformation);
-//        }
 
 
         Toolbar musicListToolbar = (Toolbar) findViewById(R.id.music_list_toolbar);
@@ -59,17 +58,12 @@ public class PlaylistActivity extends AppCompatActivity {
 
         mAdapter = new MusicListAdapter(PlaylistActivity.this,musicInformationList);
         mRecyclerView.setAdapter(mAdapter);
-//        Toolbar musicPlayingBar = (Toolbar) findViewById(R.id.music_list_playing);
-//        musicPlayingBar.animate().translationY(-musicPlayingBar.getBottom()).setInterpolator(
-//                new AccelerateInterpolator()).start();
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//    }
-
     public void playSong(final MusicInformation musicInformation){
+        ImageView musicPlayingButton = (ImageView) findViewById(R.id.music_playing_button);
+        Picasso.with(this).load(R.drawable.pause_button).into(musicPlayingButton);
+
         TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
         musicPlayingTitle.setTextSize(20);
         musicPlayingTitle.setText(musicInformation.getTitle());
@@ -77,14 +71,28 @@ public class PlaylistActivity extends AppCompatActivity {
         Toolbar musicPlayingBar = (Toolbar) findViewById(R.id.music_list_playing);
         setSupportActionBar(musicPlayingBar);
 
+        play(musicInformation);
+
         musicPlayingBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                MusicPlayingFragment musicPlayingFragment = MusicPlayingFragment.newInstance(musicInformation);
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.replace(R.id.playlist_fragment_container,musicPlayingFragment);
+//                transaction.addToBackStack(null);
+//                transaction.commit();
+
                 MusicPlayingFragment musicPlayingFragment = MusicPlayingFragment.newInstance(musicInformation);
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.playlist_fragment_container,musicPlayingFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.addToBackStack(null);
+                musicPlayingFragment.show(ft,null);
+            }
+        });
+
+        musicPlayingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playStateClick();
             }
         });
     }
@@ -123,6 +131,36 @@ public class PlaylistActivity extends AppCompatActivity {
         }
         else{
             musicInformationList = readFileService.getAllMusicFile();
+        }
+    }
+
+    public void play(MusicInformation musicInformation){
+        try{
+            mediaPlayer.setDataSource(musicInformation.getPath() + File.separator + musicInformation.getFileName());
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void playStateClick(){
+        ImageView musicPlayingButton = (ImageView) findViewById(R.id.music_playing_button);
+        try{
+            if(mediaPlayer.isPlaying()){
+                Picasso.with(PlaylistActivity.this).load(R.drawable.play_button).into(musicPlayingButton);
+                mediaPlayer.pause();
+                currentPosition = mediaPlayer.getCurrentPosition();
+            }
+            else{
+                Picasso.with(PlaylistActivity.this).load(R.drawable.pause_button).into(musicPlayingButton);
+                mediaPlayer.seekTo(currentPosition);
+                mediaPlayer.start();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

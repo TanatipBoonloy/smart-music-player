@@ -8,6 +8,25 @@ public class MusicInformation {
     private String author;
     private int length;
     private String thumbnail;
+    private String path;
+    private String fileName;
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getPath() {
+
+        return path;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
 
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;

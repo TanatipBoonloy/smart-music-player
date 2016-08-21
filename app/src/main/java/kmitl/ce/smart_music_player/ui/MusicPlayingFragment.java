@@ -2,10 +2,13 @@ package kmitl.ce.smart_music_player.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -16,7 +19,7 @@ import kmitl.ce.smart_music_player.model.MusicInformation;
 /**
  * Created by Jo on 8/16/2016.
  */
-public class MusicPlayingFragment extends Fragment{
+public class MusicPlayingFragment extends DialogFragment{
     public static final String KEY_MESSAGE = "music_inform";
 
     private String musicTitle;
