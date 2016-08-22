@@ -44,9 +44,7 @@
         <ImageButton
             android:id="@+id/music_playing_button"
             android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:minHeight="0dp"
-            android:paddingRight="10dp"/>
+            android:layout_height="match_parent" />
 
         <TextView
             android:id="@+id/music_playing_title"
