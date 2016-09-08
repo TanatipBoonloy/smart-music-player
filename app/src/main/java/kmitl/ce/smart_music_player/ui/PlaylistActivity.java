@@ -190,4 +190,14 @@ public class PlaylistActivity extends AppCompatActivity {
     public ImageButton getMusicPlayingButton(){
         return musicPlayingButton;
     }
+
+    public List<MusicInformation> getMusicInformationList(){ return musicInformationList;}
+
+    public int getTotalDuration(){
+        return mediaPlayer.getDuration();
+    }
+
+    public int getCurrentPosition(){
+        return mediaPlayer.getCurrentPosition();
+    }
 }
