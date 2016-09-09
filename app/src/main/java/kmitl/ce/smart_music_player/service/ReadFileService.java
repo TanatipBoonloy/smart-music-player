@@ -16,11 +16,11 @@ public class ReadFileService {
     private String path;
     private List<MusicInformation> musicInformationList;
 
-    public ReadFileService(){
-        path = Environment.getExternalStorageDirectory().getPath()+"/Music/";
+    public ReadFileService() {
+        path = Environment.getExternalStorageDirectory().getPath() + "/Music/";
     }
 
-    public List<MusicInformation> getAllMusicFile(){
+    public List<MusicInformation> getAllMusicFile() {
         musicInformationList = new ArrayList<>();
         File externalFile = new File(path);
         scanDirectory(externalFile);
@@ -28,24 +28,23 @@ public class ReadFileService {
         return musicInformationList;
     }
 
-    public void scanDirectory(File directory){
-        if(directory != null){
-            if(directory.isDirectory()) {
+    public void scanDirectory(File directory) {
+        if (directory != null) {
+            if (directory.isDirectory()) {
                 File[] files = directory.listFiles();
                 if (files != null && files.length > 0) {
                     for (File file : files) {
                         scanDirectory(file);
                     }
                 }
-            }
-            else{
+            } else {
                 addSongToList(directory);
             }
         }
     }
 
-    public void addSongToList(File file){
-        if(file.getName().endsWith(".mp3")){
+    public void addSongToList(File file) {
+        if (file.getName().endsWith(".mp3")) {
             MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
             mediaMetadataRetriever.setDataSource(file.getPath());
             byte[] embededPic = mediaMetadataRetriever.getEmbeddedPicture();
@@ -64,7 +63,7 @@ public class ReadFileService {
             musicInformation.setYear(year);
             musicInformation.setGenre(genre);
             musicInformation.setAlbum(album);
-            musicInformation.setDuration(duration);
+            musicInformation.setDuration(Integer.parseInt(duration));
             musicInformation.setPath(file.getPath());
             musicInformation.setFileName(file.getName());
 

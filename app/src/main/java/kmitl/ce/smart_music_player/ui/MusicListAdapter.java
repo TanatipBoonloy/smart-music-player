@@ -69,7 +69,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
                 int position = musicViewHolder.getAdapterPosition();
 
 //                Toast.makeText(mContext,musicInformationList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
-                ((PlaylistActivity)mContext).playSong(musicInformationList.get(position));
+                ((PlaylistActivity)mContext).playSong(position);
             }
         };
 

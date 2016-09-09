@@ -12,6 +12,8 @@ public class MusicInformation {
     private String fileName;
     private String year;
     private String album;
+    private String genre;
+    private Integer duration;
 
     public void setAlbum(String album) {
         this.album = album;
@@ -22,8 +24,6 @@ public class MusicInformation {
         return album;
     }
 
-    private String genre;
-
     public void setYear(String year) {
         this.year = year;
     }
@@ -32,7 +32,7 @@ public class MusicInformation {
         this.genre = genre;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
@@ -45,11 +45,9 @@ public class MusicInformation {
         return genre;
     }
 
-    public String getDuration() {
+    public Integer getDuration() {
         return duration;
     }
-
-    private String duration;
 
     public void setPath(String path) {
         this.path = path;

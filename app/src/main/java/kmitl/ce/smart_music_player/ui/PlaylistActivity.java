@@ -40,6 +40,9 @@ public class PlaylistActivity extends AppCompatActivity {
     private ReadFileService readFileService;
     private MediaPlayer mediaPlayer;
     private int currentPosition;
+    private int currentSongInt;
+    private boolean isRepeat = true;
+    private boolean isShuffle = false;
 
     private Integer playStateImage = null;
     ImageButton musicPlayingButton;
@@ -62,58 +65,21 @@ public class PlaylistActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new MusicListAdapter(PlaylistActivity.this,musicInformationList);
+        mAdapter = new MusicListAdapter(PlaylistActivity.this, musicInformationList);
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    public void playSong(final MusicInformation musicInformation){
-        playStateImage = R.drawable.pause_button;
-        updatePlayButton(musicPlayingButton);
-
-        TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
-        musicPlayingTitle.setTextSize(20);
-        musicPlayingTitle.setText(musicInformation.getTitle());
-
-        Toolbar musicPlayingBar = (Toolbar) findViewById(R.id.music_list_playing);
-        setSupportActionBar(musicPlayingBar);
-
-        play(musicInformation);
-
-        musicPlayingBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                MusicPlayingFragment musicPlayingFragment = MusicPlayingFragment.newInstance(musicInformation);
-//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//                transaction.replace(R.id.playlist_fragment_container,musicPlayingFragment);
-//                transaction.addToBackStack(null);
-//                transaction.commit();
-
-
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                Fragment prevFragment = getSupportFragmentManager().findFragmentByTag("musicPlayingDialog");
-                if(prevFragment!=null){
-                    ft.remove(prevFragment);
-                }
-
-                ft.addToBackStack(null);
-                MusicPlayingFragment musicPlayingFragment = MusicPlayingFragment.newInstance(1,musicInformation);
-                musicPlayingFragment.show(ft,"musicPlayingDialog");
-            }
-        });
-
-        musicPlayingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                playStateClick(musicPlayingButton);
-            }
-        });
+    public void playSong(int position) {
+        currentSongInt = position;
+        play();
+        setPlayToolBar();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case 1 : {
+            case 1: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -131,73 +97,123 @@ public class PlaylistActivity extends AppCompatActivity {
         }
     }
 
-    public void getMusicList(){
-        if(Build.VERSION.SDK_INT >= 23) {
+    public void getMusicList() {
+        if (Build.VERSION.SDK_INT >= 23) {
             if (PlaylistActivity.this.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            }
-            else{
+            } else {
                 musicInformationList = readFileService.getAllMusicFile();
             }
-        }
-        else{
+        } else {
             musicInformationList = readFileService.getAllMusicFile();
         }
     }
 
-    public void play(MusicInformation musicInformation){
-
+    public void play() {
+        MusicInformation musicInformation = musicInformationList.get(currentSongInt);
         mediaPlayer.reset();
 
-        try{
+        try {
             mediaPlayer.setDataSource(musicInformation.getPath());
             mediaPlayer.prepare();
             mediaPlayer.start();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void playStateClick(ImageButton imageButton){
-        try{
-            if(mediaPlayer.isPlaying()){
+    public void setPlayToolBar(){
+        MusicInformation musicInformation = musicInformationList.get(currentSongInt);
+        playStateImage = R.drawable.pause_button;
+        updatePlayButton(musicPlayingButton);
+
+
+        TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
+        musicPlayingTitle.setTextSize(20);
+        musicPlayingTitle.setText(musicInformation.getTitle());
+
+        Toolbar musicPlayingBar = (Toolbar) findViewById(R.id.music_list_playing);
+        setSupportActionBar(musicPlayingBar);
+
+        musicPlayingBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                Fragment prevFragment = getSupportFragmentManager().findFragmentByTag("musicPlayingDialog");
+                if (prevFragment != null) {
+                    ft.remove(prevFragment);
+                }
+
+                ft.addToBackStack(null);
+                MusicPlayingFragment musicPlayingFragment = MusicPlayingFragment.newInstance();
+                musicPlayingFragment.show(ft, "musicPlayingDialog");
+            }
+        });
+
+        musicPlayingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playStateClick(musicPlayingButton);
+            }
+        });
+    }
+
+    public void playStateClick(ImageButton imageButton) {
+        try {
+            if (mediaPlayer.isPlaying()) {
                 playStateImage = R.drawable.play_button;
                 mediaPlayer.pause();
                 currentPosition = mediaPlayer.getCurrentPosition();
-            }
-            else{
+            } else {
                 playStateImage = R.drawable.pause_button;
                 mediaPlayer.seekTo(currentPosition);
                 mediaPlayer.start();
             }
             updatePlayButton(imageButton);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void updatePlayButton(ImageButton imageButton){
+    public void updatePlayButton(ImageButton imageButton) {
         Picasso.with(PlaylistActivity.this).load(playStateImage).into(imageButton);
     }
 
-    public int getPlayStateImage(){
+    public int getPlayStateImage() {
         return playStateImage;
     }
 
-    public ImageButton getMusicPlayingButton(){
+    public ImageButton getMusicPlayingButton() {
         return musicPlayingButton;
     }
 
-    public List<MusicInformation> getMusicInformationList(){ return musicInformationList;}
+//    public List<MusicInformation> getMusicInformationList() {
+//        return musicInformationList;
+//    }
 
-    public int getTotalDuration(){
-        return mediaPlayer.getDuration();
+    public MusicInformation getMusicInformation(){
+        return musicInformationList.get(currentSongInt);
     }
 
-    public int getCurrentPosition(){
-        return mediaPlayer.getCurrentPosition();
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
+    public void nextSong(){
+        this.currentSongInt = this.currentSongInt+1;
+        if(this.currentSongInt >= musicInformationList.size()){
+            this.currentSongInt = 0;
+        }
+        play();
+    }
+
+    public void previousSong(){
+        this.currentSongInt = this.currentSongInt-1;
+
+        if(this.currentSongInt < 0){
+            this.currentSongInt = musicInformationList.size()-1;
+        }
+        play();
     }
 }
