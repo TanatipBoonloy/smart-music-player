@@ -27,6 +27,7 @@ import org.w3c.dom.Text;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import kmitl.ce.smart_music_player.R;
 import kmitl.ce.smart_music_player.model.MusicInformation;
@@ -41,8 +42,10 @@ public class PlaylistActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private int currentPosition;
     private int currentSongInt;
-    private boolean isRepeat = true;
+    private boolean isRepeat = false;
     private boolean isShuffle = false;
+    private List<MusicInformation> musicInformationListRandom;
+    private List<MusicInformation> musicInformationListNormal;
 
     private Integer playStateImage = null;
     ImageButton musicPlayingButton;
@@ -53,12 +56,15 @@ public class PlaylistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_playlist);
 
         musicInformationList = new ArrayList<>();
+        musicInformationListRandom=new ArrayList<>();
+        musicInformationListNormal=new ArrayList<>();
         readFileService = new ReadFileService();
         mediaPlayer = new MediaPlayer();
         getMusicList();
+        musicInformationListNormal=musicInformationList;
 
 
-        Toolbar musicListToolbar = (Toolbar) findViewById(R.id.music_list_toolbar);
+        final Toolbar musicListToolbar = (Toolbar) findViewById(R.id.music_list_toolbar);
         setSupportActionBar(musicListToolbar);
         musicPlayingButton = (ImageButton) findViewById(R.id.music_playing_button);
 
@@ -67,6 +73,27 @@ public class PlaylistActivity extends AppCompatActivity {
 
         mAdapter = new MusicListAdapter(PlaylistActivity.this, musicInformationList);
         mRecyclerView.setAdapter(mAdapter);
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mp) {
+                currentSongInt+=1;
+                if (currentSongInt==musicInformationList.size()){
+                    currentSongInt=0;
+                }
+
+                if (isShuffle){
+                    playSong(currentSongInt); //changed playlist
+                }else if(isRepeat){
+                    playSong(currentSongInt);// repeat all list
+                }else{
+                    playSong(currentSongInt); //no repeat,no shuffle,play next song
+
+                }
+            }
+        });
+
+        musicInformationListRandom=musicInformationList;
+        //setMusicInformationListRandom();
     }
 
     public void playSong(int position) {
@@ -188,9 +215,7 @@ public class PlaylistActivity extends AppCompatActivity {
         return musicPlayingButton;
     }
 
-//    public List<MusicInformation> getMusicInformationList() {
-//        return musicInformationList;
-//    }
+
 
     public MusicInformation getMusicInformation(){
         return musicInformationList.get(currentSongInt);
@@ -215,5 +240,41 @@ public class PlaylistActivity extends AppCompatActivity {
             this.currentSongInt = musicInformationList.size()-1;
         }
         play();
+    }
+
+    public void setMusicInformationListRandom(){
+        //Sample Random
+        /*musicInformationListRandom.add(musicInformationList.get(2));
+        musicInformationListRandom.add(musicInformationList.get(1));
+        musicInformationListRandom.add(musicInformationList.get(0));
+        musicInformationListRandom.add(musicInformationList.get(3));
+        musicInformationListRandom.add(musicInformationList.get(4));
+        musicInformationListRandom.add(musicInformationList.get(6));
+        musicInformationListRandom.add(musicInformationList.get(5));*/
+
+
+    }
+
+    public void setIsRepeat(boolean change){
+        this.isRepeat=change;
+    }
+
+    public void setIsShuffle(boolean change){
+        this.isShuffle=change;
+        if(isShuffle==true){
+            musicInformationList=musicInformationListRandom;
+        }else{
+            musicInformationList=musicInformationListNormal;
+        }
+    }
+
+    public boolean getIsRepeat(){return isRepeat;}
+
+    public boolean getIsShuffle(){return isShuffle;}
+
+    public void updateSongName(){
+        TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
+        musicPlayingTitle.setTextSize(20);
+        musicPlayingTitle.setText(getMusicInformation().getTitle());
     }
 }

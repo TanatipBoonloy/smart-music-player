@@ -33,7 +33,6 @@ public class MusicPlayingFragment extends DialogFragment {
     public static final String KEY_MESSAGE = "music_inform";
 
     private MusicInformation musicInformation;
-    private Integer playButtonState = null;
     private SeekBar seekBarprocess;
     private TextView songCurrentDuration;
     private TextView songTotalDuration;
@@ -47,11 +46,6 @@ public class MusicPlayingFragment extends DialogFragment {
         MusicPlayingFragment fragment = new MusicPlayingFragment();
         return fragment;
     }
-
-    public void setMusicInformation(MusicInformation musicInformation) {
-        this.musicInformation = musicInformation;
-    }
-
 
     public MusicPlayingFragment() {
     }
@@ -115,7 +109,7 @@ public class MusicPlayingFragment extends DialogFragment {
             public void onClick(View view) {
                 //next
                 ((PlaylistActivity) getActivity()).nextSong();
-                setUpMusicPlayerView(view);
+                setUpMusicPlayerView();
             }
         });
 
@@ -124,7 +118,7 @@ public class MusicPlayingFragment extends DialogFragment {
             public void onClick(View view) {
                 //previous
                 ((PlaylistActivity) getActivity()).previousSong();
-                setUpMusicPlayerView(view);
+                setUpMusicPlayerView();
             }
         });
 
@@ -133,8 +127,15 @@ public class MusicPlayingFragment extends DialogFragment {
             public void run() {
                 if (mediaPlayer != null) {
                     int mCurrentPosition = mediaPlayer.getCurrentPosition();
+                    int mTotalDuration=mediaPlayer.getDuration();
                     seekBarprocess.setProgress(mCurrentPosition / 1000);
                     songCurrentDuration.setText(getTimeString(mCurrentPosition));
+                    songTotalDuration.setText(getTimeString(mTotalDuration));
+
+                    if(getActivity()!=null){
+                        setUpMusicPlayerView();
+                    }
+
                 }
                 handler.postDelayed(this, 1000);
             }
@@ -160,14 +161,38 @@ public class MusicPlayingFragment extends DialogFragment {
             }
         });
 
-        setUpMusicPlayerView(rootView);
+        repeatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //repeat
+                if(((PlaylistActivity) getActivity()).getIsRepeat()==true){
+                    ((PlaylistActivity) getActivity()).setIsRepeat(false);
+                }else{
+                    ((PlaylistActivity) getActivity()).setIsRepeat(true);
+                }
+            }
+        });
+
+        shuffleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //shuffle
+                if(((PlaylistActivity) getActivity()).getIsShuffle()==true){
+                    ((PlaylistActivity) getActivity()).setIsShuffle(false);
+                }else{
+                    ((PlaylistActivity) getActivity()).setIsShuffle(true);
+                }
+            }
+        });
+
+        setUpMusicPlayerView();
 
         return rootView;
     }
 
-    private void setImageView(View rootView) {
+    private void setImageView() {
         //ImageView
-        byte[] thumbnail = musicInformation.getThumbnail();
+        byte[] thumbnail = ((PlaylistActivity)getActivity()).getMusicInformation().getThumbnail();
         if (thumbnail != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
             imageView.setImageBitmap(bitmap);
@@ -180,13 +205,14 @@ public class MusicPlayingFragment extends DialogFragment {
     public void onDestroy() {
         super.onDestroy();
         ((PlaylistActivity) getActivity()).updatePlayButton(((PlaylistActivity) getActivity()).getMusicPlayingButton());
+        ((PlaylistActivity) getActivity()).updateSongName();
     }
 
-    private void setUpMusicPlayerView(View view){
+    private void setUpMusicPlayerView(){
         musicInformation = ((PlaylistActivity) getActivity()).getMusicInformation();
         songNameView.setText(musicInformation.getTitle());
         artistNameView.setText(musicInformation.getArtist());
-        setImageView(view);
+        setImageView();
         seekBarprocess.setMax(musicInformation.getDuration() / 1000);
         songTotalDuration.setText(getTimeString(musicInformation.getDuration()));
     }
