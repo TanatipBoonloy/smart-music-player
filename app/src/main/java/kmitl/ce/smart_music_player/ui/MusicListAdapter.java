@@ -18,6 +18,7 @@ import java.util.List;
 
 import kmitl.ce.smart_music_player.R;
 import kmitl.ce.smart_music_player.model.MusicInformation;
+import kmitl.ce.smart_music_player.service.Utility;
 
 /**
  * Created by Jo on 8/16/2016.
@@ -41,7 +42,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
 
     @Override
     public void onBindViewHolder(final MusicViewHolder holder, int position) {
-        holder.textView.setText(musicInformationList.get(position).getTitle());
+        holder.textView.setText(Utility.subStringTitle(musicInformationList.get(position).getTitle(),2));
 
         byte[] thumbnail = musicInformationList.get(position).getThumbnail();
         if(thumbnail != null) {

@@ -25,6 +25,7 @@ import java.util.List;
 
 import kmitl.ce.smart_music_player.R;
 import kmitl.ce.smart_music_player.model.MusicInformation;
+import kmitl.ce.smart_music_player.service.Utility;
 
 /**
  * Created by Jo on 8/16/2016.
@@ -41,6 +42,8 @@ public class MusicPlayingFragment extends DialogFragment {
     private TextView songNameView;
     private TextView artistNameView;
     private ImageView imageView;
+    private Integer stateRepeat;
+    private Integer stateShuffle;
 
     public static MusicPlayingFragment newInstance() {
         MusicPlayingFragment fragment = new MusicPlayingFragment();
@@ -80,8 +83,8 @@ public class MusicPlayingFragment extends DialogFragment {
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
         ImageButton nextButton = (ImageButton) rootView.findViewById(R.id.next);
         ImageButton previousButton = (ImageButton) rootView.findViewById(R.id.previous);
-        ImageButton repeatButton = (ImageButton) rootView.findViewById(R.id.repeat);
-        ImageButton shuffleButton = (ImageButton) rootView.findViewById(R.id.shuffle);
+        final ImageButton repeatButton = (ImageButton) rootView.findViewById(R.id.repeat);
+        final ImageButton shuffleButton = (ImageButton) rootView.findViewById(R.id.shuffle);
 
         ImageButton backBtn = (ImageButton) rootView.findViewById(R.id.back);
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -167,9 +170,12 @@ public class MusicPlayingFragment extends DialogFragment {
                 //repeat
                 if(((PlaylistActivity) getActivity()).getIsRepeat()==true){
                     ((PlaylistActivity) getActivity()).setIsRepeat(false);
+                    stateRepeat= R.drawable.repeat_button;
                 }else{
                     ((PlaylistActivity) getActivity()).setIsRepeat(true);
+                    stateRepeat= R.drawable.repeat_button_press;
                 }
+                Picasso.with(getActivity()).load(stateRepeat).into(repeatButton);
             }
         });
 
@@ -179,9 +185,12 @@ public class MusicPlayingFragment extends DialogFragment {
                 //shuffle
                 if(((PlaylistActivity) getActivity()).getIsShuffle()==true){
                     ((PlaylistActivity) getActivity()).setIsShuffle(false);
+                    stateShuffle=R.drawable.shuffle_arrows;
                 }else{
                     ((PlaylistActivity) getActivity()).setIsShuffle(true);
+                    stateShuffle=R.drawable.shuffle_arrows_press;
                 }
+                Picasso.with(getActivity()).load(stateShuffle).into(shuffleButton);
             }
         });
 
@@ -210,7 +219,7 @@ public class MusicPlayingFragment extends DialogFragment {
 
     private void setUpMusicPlayerView(){
         musicInformation = ((PlaylistActivity) getActivity()).getMusicInformation();
-        songNameView.setText(musicInformation.getTitle());
+        songNameView.setText(Utility.subStringTitle(musicInformation.getTitle(),1));
         artistNameView.setText(musicInformation.getArtist());
         setImageView();
         seekBarprocess.setMax(musicInformation.getDuration() / 1000);

@@ -32,6 +32,7 @@ import java.util.Random;
 import kmitl.ce.smart_music_player.R;
 import kmitl.ce.smart_music_player.model.MusicInformation;
 import kmitl.ce.smart_music_player.service.ReadFileService;
+import kmitl.ce.smart_music_player.service.Utility;
 
 public class PlaylistActivity extends AppCompatActivity {
 
@@ -158,7 +159,9 @@ public class PlaylistActivity extends AppCompatActivity {
 
         TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
         musicPlayingTitle.setTextSize(20);
-        musicPlayingTitle.setText(musicInformation.getTitle());
+
+
+        musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(),0));
 
         Toolbar musicPlayingBar = (Toolbar) findViewById(R.id.music_list_playing);
         setSupportActionBar(musicPlayingBar);
@@ -275,6 +278,8 @@ public class PlaylistActivity extends AppCompatActivity {
     public void updateSongName(){
         TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
         musicPlayingTitle.setTextSize(20);
-        musicPlayingTitle.setText(getMusicInformation().getTitle());
+        musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(),0));
     }
+
+
 }
