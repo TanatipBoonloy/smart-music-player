@@ -130,12 +130,12 @@ public class MusicPlayingFragment extends DialogFragment {
             public void run() {
                 if (mediaPlayer != null) {
                     int mCurrentPosition = mediaPlayer.getCurrentPosition();
-                    int mTotalDuration=mediaPlayer.getDuration();
+                    int mTotalDuration = mediaPlayer.getDuration();
                     seekBarprocess.setProgress(mCurrentPosition / 1000);
                     songCurrentDuration.setText(getTimeString(mCurrentPosition));
                     songTotalDuration.setText(getTimeString(mTotalDuration));
 
-                    if(getActivity()!=null){
+                    if (getActivity() != null) {
                         setUpMusicPlayerView();
                     }
 
@@ -168,12 +168,12 @@ public class MusicPlayingFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 //repeat
-                if(((PlaylistActivity) getActivity()).getIsRepeat()==true){
+                if (((PlaylistActivity) getActivity()).getIsRepeat() == true) {
                     ((PlaylistActivity) getActivity()).setIsRepeat(false);
-                    stateRepeat= R.drawable.repeat_button;
-                }else{
+                    stateRepeat = R.drawable.repeat_button;
+                } else {
                     ((PlaylistActivity) getActivity()).setIsRepeat(true);
-                    stateRepeat= R.drawable.repeat_button_press;
+                    stateRepeat = R.drawable.repeat_button_press;
                 }
                 Picasso.with(getActivity()).load(stateRepeat).into(repeatButton);
             }
@@ -183,12 +183,12 @@ public class MusicPlayingFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 //shuffle
-                if(((PlaylistActivity) getActivity()).getIsShuffle()==true){
+                if (((PlaylistActivity) getActivity()).getIsShuffle() == true) {
                     ((PlaylistActivity) getActivity()).setIsShuffle(false);
-                    stateShuffle=R.drawable.shuffle_arrows;
-                }else{
+                    stateShuffle = R.drawable.shuffle_arrows;
+                } else {
                     ((PlaylistActivity) getActivity()).setIsShuffle(true);
-                    stateShuffle=R.drawable.shuffle_arrows_press;
+                    stateShuffle = R.drawable.shuffle_arrows_press;
                 }
                 Picasso.with(getActivity()).load(stateShuffle).into(shuffleButton);
             }
@@ -201,7 +201,7 @@ public class MusicPlayingFragment extends DialogFragment {
 
     private void setImageView() {
         //ImageView
-        byte[] thumbnail = ((PlaylistActivity)getActivity()).getMusicInformation().getThumbnail();
+        byte[] thumbnail = ((PlaylistActivity) getActivity()).getMusicInformation().getThumbnail();
         if (thumbnail != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
             imageView.setImageBitmap(bitmap);
@@ -217,9 +217,9 @@ public class MusicPlayingFragment extends DialogFragment {
         ((PlaylistActivity) getActivity()).updateSongName();
     }
 
-    private void setUpMusicPlayerView(){
+    private void setUpMusicPlayerView() {
         musicInformation = ((PlaylistActivity) getActivity()).getMusicInformation();
-        songNameView.setText(Utility.subStringTitle(musicInformation.getTitle(),1));
+        songNameView.setText(Utility.subStringTitle(musicInformation.getTitle(), 1));
         artistNameView.setText(musicInformation.getArtist());
         setImageView();
         seekBarprocess.setMax(musicInformation.getDuration() / 1000);

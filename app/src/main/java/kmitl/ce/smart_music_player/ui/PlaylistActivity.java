@@ -22,6 +22,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
+import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
+import kmitl.ce.smart_music_player.service.DBInitialService;
+import kmitl.ce.smart_music_player.service.PrintResultService;
 import org.w3c.dom.Text;
 
 import java.io.File;
@@ -51,18 +57,30 @@ public class PlaylistActivity extends AppCompatActivity {
     private Integer playStateImage = null;
     ImageButton musicPlayingButton;
 
+    private Realm realm;
+    private List<RealmMusicInformation> realmMusicInformationList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist);
+        realm = Realm.getDefaultInstance();
 
         musicInformationList = new ArrayList<>();
-        musicInformationListRandom=new ArrayList<>();
-        musicInformationListNormal=new ArrayList<>();
+        musicInformationListRandom = new ArrayList<>();
+        musicInformationListNormal = new ArrayList<>();
         readFileService = new ReadFileService();
         mediaPlayer = new MediaPlayer();
+
+        try {
+            realmMusicInformationList = DBInitialService.initialize(realm, this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         getMusicList();
-        musicInformationListNormal=musicInformationList;
+        musicInformationListNormal = musicInformationList;
 
 
         final Toolbar musicListToolbar = (Toolbar) findViewById(R.id.music_list_toolbar);
@@ -72,29 +90,41 @@ public class PlaylistActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new MusicListAdapter(PlaylistActivity.this, musicInformationList);
+        mAdapter = new MusicListAdapter(PlaylistActivity.this, musicInformationList, realm);
         mRecyclerView.setAdapter(mAdapter);
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             public void onCompletion(MediaPlayer mp) {
-                currentSongInt+=1;
-                if (currentSongInt==musicInformationList.size()){
-                    currentSongInt=0;
+                currentSongInt += 1;
+                if (currentSongInt == musicInformationList.size()) {
+                    currentSongInt = 0;
                 }
 
-                if (isShuffle){
+                if (isShuffle) {
                     playSong(currentSongInt); //changed playlist
-                }else if(isRepeat){
+                } else if (isRepeat) {
                     playSong(currentSongInt);// repeat all list
-                }else{
+                } else {
                     playSong(currentSongInt); //no repeat,no shuffle,play next song
 
                 }
             }
         });
 
-        musicInformationListRandom=musicInformationList;
+        musicListToolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PrintResultService.printResult(PlaylistActivity.this,realm);
+            }
+        });
+        musicInformationListRandom = musicInformationList;
         //setMusicInformationListRandom();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 
     public void playSong(int position) {
@@ -112,7 +142,7 @@ public class PlaylistActivity extends AppCompatActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    musicInformationList = readFileService.getAllMusicFile();
+                    musicInformationList = readFileService.getAllMusicFile(realmMusicInformationList);
 
                 } else {
                     musicInformationList = new ArrayList<>();
@@ -131,10 +161,10 @@ public class PlaylistActivity extends AppCompatActivity {
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             } else {
-                musicInformationList = readFileService.getAllMusicFile();
+                musicInformationList = readFileService.getAllMusicFile(realmMusicInformationList);
             }
         } else {
-            musicInformationList = readFileService.getAllMusicFile();
+            musicInformationList = readFileService.getAllMusicFile(realmMusicInformationList);
         }
     }
 
@@ -151,7 +181,7 @@ public class PlaylistActivity extends AppCompatActivity {
         }
     }
 
-    public void setPlayToolBar(){
+    public void setPlayToolBar() {
         MusicInformation musicInformation = musicInformationList.get(currentSongInt);
         playStateImage = R.drawable.pause_button;
         updatePlayButton(musicPlayingButton);
@@ -161,7 +191,7 @@ public class PlaylistActivity extends AppCompatActivity {
         musicPlayingTitle.setTextSize(20);
 
 
-        musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(),0));
+        musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(), 0));
 
         Toolbar musicPlayingBar = (Toolbar) findViewById(R.id.music_list_playing);
         setSupportActionBar(musicPlayingBar);
@@ -219,8 +249,7 @@ public class PlaylistActivity extends AppCompatActivity {
     }
 
 
-
-    public MusicInformation getMusicInformation(){
+    public MusicInformation getMusicInformation() {
         return musicInformationList.get(currentSongInt);
     }
 
@@ -228,24 +257,24 @@ public class PlaylistActivity extends AppCompatActivity {
         return mediaPlayer;
     }
 
-    public void nextSong(){
-        this.currentSongInt = this.currentSongInt+1;
-        if(this.currentSongInt >= musicInformationList.size()){
+    public void nextSong() {
+        this.currentSongInt = this.currentSongInt + 1;
+        if (this.currentSongInt >= musicInformationList.size()) {
             this.currentSongInt = 0;
         }
         play();
     }
 
-    public void previousSong(){
-        this.currentSongInt = this.currentSongInt-1;
+    public void previousSong() {
+        this.currentSongInt = this.currentSongInt - 1;
 
-        if(this.currentSongInt < 0){
-            this.currentSongInt = musicInformationList.size()-1;
+        if (this.currentSongInt < 0) {
+            this.currentSongInt = musicInformationList.size() - 1;
         }
         play();
     }
 
-    public void setMusicInformationListRandom(){
+    public void setMusicInformationListRandom() {
         //Sample Random
         /*musicInformationListRandom.add(musicInformationList.get(2));
         musicInformationListRandom.add(musicInformationList.get(1));
@@ -258,28 +287,31 @@ public class PlaylistActivity extends AppCompatActivity {
 
     }
 
-    public void setIsRepeat(boolean change){
-        this.isRepeat=change;
+    public void setIsRepeat(boolean change) {
+        this.isRepeat = change;
     }
 
-    public void setIsShuffle(boolean change){
-        this.isShuffle=change;
-        if(isShuffle==true){
-            musicInformationList=musicInformationListRandom;
-        }else{
-            musicInformationList=musicInformationListNormal;
+    public void setIsShuffle(boolean change) {
+        this.isShuffle = change;
+        if (isShuffle == true) {
+            musicInformationList = musicInformationListRandom;
+        } else {
+            musicInformationList = musicInformationListNormal;
         }
     }
 
-    public boolean getIsRepeat(){return isRepeat;}
-
-    public boolean getIsShuffle(){return isShuffle;}
-
-    public void updateSongName(){
-        TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
-        musicPlayingTitle.setTextSize(20);
-        musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(),0));
+    public boolean getIsRepeat() {
+        return isRepeat;
     }
 
+    public boolean getIsShuffle() {
+        return isShuffle;
+    }
+
+    public void updateSongName() {
+        TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
+        musicPlayingTitle.setTextSize(20);
+        musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(), 0));
+    }
 
 }

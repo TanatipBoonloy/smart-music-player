@@ -14,6 +14,15 @@ public class MusicInformation {
     private String album;
     private String genre;
     private Integer duration;
+    private int realmIndex;
+
+    public int getRealmIndex() {
+        return realmIndex;
+    }
+
+    public void setRealmIndex(int realmIndex) {
+        this.realmIndex = realmIndex;
+    }
 
     public void setAlbum(String album) {
         this.album = album;
