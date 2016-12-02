@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -56,25 +55,25 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
                 .getDefaultDisplay()
                 .getMetrics(displaymetrics);
         int screenWidth = displaymetrics.widthPixels;
-        holder.textView.setWidth((screenWidth) * 40 / 100);
+        holder.textView.setWidth((screenWidth) * 80 / 100);
         holder.imageView.setMaxWidth((screenWidth) * 20 / 100);
-        holder.likeButton.setWidth(screenWidth * 20 / 100);
+        //holder.likeButton.setWidth(screenWidth * 20 / 100);
 
         holder.textView.setText(Utility.subStringTitle(musicInformationList.get(position).getTitle(), 2));
-        holder.likeButton.setText("Like");
+        //holder.likeButton.setText("Like");
 
         int rIndex = musicInformationList.get(position).getRealmIndex();
         RealmResults<RealmMusicInformation> result = realm.where(RealmMusicInformation.class)
                 .equalTo("id", rIndex)
                 .findAll();
         RealmMusicInformation realmMusic = result.get(0);
-        if (realmMusic.getLike() == null) {
-            holder.likeButton.setBackgroundColor(Color.parseColor("#2E2EFE"));
-        } else if (realmMusic.getLike()) {
-            holder.likeButton.setBackgroundColor(Color.parseColor("#A9D0F5"));
-        } else {
-            holder.likeButton.setBackgroundColor(Color.parseColor("#F78181"));
-        }
+//        if (realmMusic.getLike() == null) {
+//            holder.likeButton.setBackgroundColor(Color.parseColor("#2E2EFE"));
+//        } else if (realmMusic.getLike()) {
+//            holder.likeButton.setBackgroundColor(Color.parseColor("#A9D0F5"));
+//        } else {
+//            holder.likeButton.setBackgroundColor(Color.parseColor("#F78181"));
+//        }
 
         byte[] thumbnail = musicInformationList.get(position).getThumbnail();
         if (thumbnail != null) {
@@ -92,7 +91,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
 
         holder.textView.setTag(holder);
         holder.imageView.setTag(holder);
-        holder.likeButton.setTag(holder);
+        //holder.likeButton.setTag(holder);
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -135,7 +134,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
 
         holder.textView.setOnClickListener(onClickListener);
         holder.imageView.setOnClickListener(onClickListener);
-        holder.likeButton.setOnClickListener(onLikeBtn);
+        //holder.likeButton.setOnClickListener(onLikeBtn);
 
 
     }
@@ -148,13 +147,13 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
     public static class MusicViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public TextView textView;
-        public Button likeButton;
+        //public Button likeButton;
 
         public MusicViewHolder(View view) {
             super(view);
             this.imageView = (ImageView) view.findViewById(R.id.music_image);
             this.textView = (TextView) view.findViewById(R.id.music_title);
-            this.likeButton = (Button) view.findViewById(R.id.like_button);
+            //this.likeButton = (Button) view.findViewById(R.id.like_button);
         }
     }
 }

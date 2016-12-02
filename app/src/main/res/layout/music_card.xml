@@ -16,18 +16,19 @@
 
         <TextView
                 android:id="@+id/music_title"
+                android:layout_marginStart="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingTop="10dp"
-                android:textAlignment="center"
+                android:textAlignment="textStart"
                 android:layout_toEndOf="@+id/music_image"/>
 
-        <Button
-            android:id="@+id/like_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"/>
+        <!--<Button-->
+            <!--android:id="@+id/like_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--android:layout_centerVertical="true"/>-->
 
     </RelativeLayout>
 

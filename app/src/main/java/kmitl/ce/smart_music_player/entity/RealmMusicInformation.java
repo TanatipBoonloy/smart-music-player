@@ -14,6 +14,8 @@ public class RealmMusicInformation extends RealmObject {
     private String path;
     private Boolean like;
     private Boolean listened;
+    private Integer duration;
+    private Integer playedTime;
 
     public void setId(int id) {
         this.id = id;
@@ -35,6 +37,14 @@ public class RealmMusicInformation extends RealmObject {
         this.listened = listened;
     }
 
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
+    public void setPlayed(Integer playedTime) {
+        this.playedTime = playedTime;
+    }
+
     public int getId() {
         return id;
     }
@@ -53,5 +63,13 @@ public class RealmMusicInformation extends RealmObject {
 
     public Boolean getListened() {
         return listened;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public Integer getPlayedTime() {
+        return playedTime;
     }
 }

@@ -225,6 +225,7 @@ public class PlaylistActivity extends AppCompatActivity {
                 playStateImage = R.drawable.play_button;
                 mediaPlayer.pause();
                 currentPosition = mediaPlayer.getCurrentPosition();
+                setPlayTime(currentPosition,currentSongInt);
             } else {
                 playStateImage = R.drawable.pause_button;
                 mediaPlayer.seekTo(currentPosition);
@@ -312,6 +313,16 @@ public class PlaylistActivity extends AppCompatActivity {
         TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
         musicPlayingTitle.setTextSize(20);
         musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(), 0));
+    }
+
+    private void setPlayTime(int playTime,int rIndex){
+        RealmResults<RealmMusicInformation> result = realm.where(RealmMusicInformation.class)
+                .equalTo("id", rIndex)
+                .findAll();
+        RealmMusicInformation realmMusic = result.get(0);
+        realm.beginTransaction();
+        realmMusic.setPlayed(playTime/1000);
+        realm.commitTransaction();
     }
 
 }
