@@ -26,6 +26,7 @@ import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
+import kmitl.ce.smart_music_player.entity.RealmMusicListened;
 import kmitl.ce.smart_music_player.service.DBInitialService;
 import kmitl.ce.smart_music_player.service.PrintResultService;
 import org.w3c.dom.Text;
@@ -59,6 +60,7 @@ public class PlaylistActivity extends AppCompatActivity {
 
     private Realm realm;
     private List<RealmMusicInformation> realmMusicInformationList;
+    private List<RealmMusicListened> realmMusicListenedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,6 +171,11 @@ public class PlaylistActivity extends AppCompatActivity {
     }
 
     public void play() {
+        if (mediaPlayer.isPlaying()) {
+            int position = mediaPlayer.getCurrentPosition();
+            setPlayTime(position,musicInformationList.get(currentSongInt).getRealmIndex());
+        }
+
         MusicInformation musicInformation = musicInformationList.get(currentSongInt);
         mediaPlayer.reset();
 
@@ -225,7 +232,7 @@ public class PlaylistActivity extends AppCompatActivity {
                 playStateImage = R.drawable.play_button;
                 mediaPlayer.pause();
                 currentPosition = mediaPlayer.getCurrentPosition();
-                setPlayTime(currentPosition,currentSongInt);
+//                setPlayTime(currentPosition,currentSongInt);
             } else {
                 playStateImage = R.drawable.pause_button;
                 mediaPlayer.seekTo(currentPosition);
@@ -321,7 +328,13 @@ public class PlaylistActivity extends AppCompatActivity {
                 .findAll();
         RealmMusicInformation realmMusic = result.get(0);
         realm.beginTransaction();
-        realmMusic.setPlayed(playTime/1000);
+//        realmMusic.setPlayed(playTime/1000);
+        Number id = realm.where(RealmMusicListened.class).max("id");
+        int index = (id != null)? id.intValue() + 1 : 1;
+        RealmMusicListened realmMusicListened = realm.createObject(RealmMusicListened.class,
+                index);
+        realmMusicListened.setRealmMusicInformation(realmMusic);
+        realmMusicListened.setPlayTimed(playTime);
         realm.commitTransaction();
     }
 
