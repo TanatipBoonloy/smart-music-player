@@ -41,10 +41,10 @@ public class PlaylistActivity extends AppCompatActivity {
     private List<MusicInformation> musicInformationList;
     private ReadFileService readFileService;
     private MediaPlayer mediaPlayer;
-    private int currentPosition;
+    private Integer currentPosition;
     //    private int currentSongInt;
-    private int currentSongPlaying;
-    private int currentSongIndex;
+    private Integer currentSongPlaying;
+    private Integer currentSongIndex;
     private boolean isRepeat = false;
     private boolean isShuffle = false;
     private List<Integer> shuffleIndexList;
@@ -55,8 +55,6 @@ public class PlaylistActivity extends AppCompatActivity {
     ImageButton musicPlayingButton;
 
     private Realm realm;
-    private List<RealmMusicInformation> realmMusicInformationList;
-    private List<RealmMusicListened> realmMusicListenedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +68,7 @@ public class PlaylistActivity extends AppCompatActivity {
         this.mediaPlayer = new MediaPlayer();
 
         try {
-            this.realmMusicInformationList = DBInitialService.initialize(this.realm, this);
+            DBInitialService.initialize(this.realm, this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,10 +91,10 @@ public class PlaylistActivity extends AppCompatActivity {
 
         this.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             public void onCompletion(MediaPlayer mp) {
-                System.out.println(getIsRepeat());
+//                System.out.println(getIsRepeat());
                 Integer toIndex = null;
-                if(currentSongIndex + 1 >= activeIndexList.size()) {
-                    if(getIsRepeat()) {
+                if (currentSongIndex + 1 >= activeIndexList.size()) {
+                    if (getIsRepeat()) {
                         toIndex = 0;
                     }
                 } else {
@@ -106,7 +104,7 @@ public class PlaylistActivity extends AppCompatActivity {
 //                        (PlaylistActivity.this.getIsRepeat()) ?
 //                                0 : null
 //                        : currentSongIndex + 1;
-                if(toIndex != null){
+                if (toIndex != null) {
                     playSong(toIndex);
                 }
 //                if (isShuffle) {
@@ -134,6 +132,7 @@ public class PlaylistActivity extends AppCompatActivity {
     }
 
     public void playSong(int position) {
+        setPlayTime();
         this.currentSongPlaying = position;
         this.currentSongIndex = (isShuffle) ? this.activeIndexList.indexOf(position) : position;
         play();
@@ -149,7 +148,7 @@ public class PlaylistActivity extends AppCompatActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    musicInformationList = readFileService.getAllMusicFile(realmMusicInformationList);
+                    musicInformationList = readFileService.getAllMusicFile(realm);
 
                 } else {
                     musicInformationList = new ArrayList<>();
@@ -168,18 +167,18 @@ public class PlaylistActivity extends AppCompatActivity {
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             } else {
-                musicInformationList = readFileService.getAllMusicFile(realmMusicInformationList);
+                musicInformationList = readFileService.getAllMusicFile(realm);
             }
         } else {
-            musicInformationList = readFileService.getAllMusicFile(realmMusicInformationList);
+            musicInformationList = readFileService.getAllMusicFile(realm);
         }
     }
 
     public void play() {
-        if (mediaPlayer.isPlaying()) {
-            int position = mediaPlayer.getCurrentPosition();
-            setPlayTime(position, getMusicInformation().getRealmIndex());
-        }
+//        if (mediaPlayer.isPlaying()) {
+//            int position = mediaPlayer.getCurrentPosition();
+//            setPlayTime(position, getMusicInformation().getRealmIndex());
+//        }
 
         MusicInformation musicInformation = getMusicInformation();
         mediaPlayer.reset();
@@ -259,7 +258,12 @@ public class PlaylistActivity extends AppCompatActivity {
 
 
     public MusicInformation getMusicInformation() {
-        return musicInformationList.get(this.currentSongPlaying);
+//        if( this.currentSongPlaying != null) {
+//            return musicInformationList.get(this.currentSongPlaying);
+//        } else {
+//            return null;
+//        }
+        return (this.currentSongPlaying != null) ? musicInformationList.get(this.currentSongPlaying) : null;
     }
 
     public MediaPlayer getMediaPlayer() {
@@ -267,11 +271,12 @@ public class PlaylistActivity extends AppCompatActivity {
     }
 
     public void nextSong() {
-        System.out.println(this.currentSongPlaying);
+        setPlayTime();
+//        System.out.println(this.currentSongPlaying);
         this.currentSongIndex = (this.currentSongIndex + 1 >= this.activeIndexList.size()) ?
                 0 : this.currentSongIndex + 1;
         this.currentSongPlaying = this.activeIndexList.get(this.currentSongIndex);
-        System.out.println(this.currentSongPlaying);
+//        System.out.println(this.currentSongPlaying);
 //        if (this.currentSongInt >= musicInformationList.size()) {
 //            this.currentSongInt = 0;
 //        }
@@ -279,6 +284,7 @@ public class PlaylistActivity extends AppCompatActivity {
     }
 
     public void previousSong() {
+        setPlayTime();
 //        this.currentSongInt = this.currentSongInt - 1;
         this.currentSongIndex = (this.currentSongIndex - 1 < 0) ?
                 this.activeIndexList.size() : this.currentSongIndex - 1;
@@ -322,7 +328,35 @@ public class PlaylistActivity extends AppCompatActivity {
         musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(), 0));
     }
 
-    private void setPlayTime(int playTime, int rIndex) {
+//    private void setPlayTimeOnComplete() {
+//            int playTime = getMusicInformation().getDuration();
+//            int rIndex = getMusicInformation().getRealmIndex();
+//        setPlayTime(playTime,rIndex);
+//    }
+//
+//    private void setPlayTimeOnPlaying() {
+//        if (this.mediaPlayer.isPlaying()) {
+//            int playTime = this.mediaPlayer.getCurrentPosition();
+//            int rIndex = getMusicInformation().getRealmIndex();
+//            setPlayTime(playTime,rIndex);
+//        }
+//    }
+
+    private void setPlayTime() {
+        int playTime;
+        int rIndex;
+        if (this.mediaPlayer.isPlaying()) {
+            playTime = this.mediaPlayer.getCurrentPosition();
+            rIndex = getMusicInformation().getRealmIndex();
+        } else {
+            if (getMusicInformation() != null) {
+                playTime = getMusicInformation().getDuration();
+                rIndex = getMusicInformation().getRealmIndex();
+            } else {
+                return;
+            }
+        }
+
         RealmResults<RealmMusicInformation> result = realm.where(RealmMusicInformation.class)
                 .equalTo("id", rIndex)
                 .findAll();

@@ -29,7 +29,7 @@ public class PrintResultService {
 
 //            outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
             for(RealmMusicInformation realmMusicInformation : result) {
-                String string = realmMusicInformation.getName() + "," + realmMusicInformation.getPlayedTime() + "," + realmMusicInformation.getDuration() + "\n";
+                String string = realmMusicInformation.getName() + "," + realmMusicInformation.getDuration() + "\n";
                 outputStream.write(string.getBytes());
             }
 

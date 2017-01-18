@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
 import kmitl.ce.smart_music_player.model.MusicInformation;
 
@@ -21,36 +22,37 @@ public class ReadFileService {
         path = Environment.getExternalStorageDirectory().getPath() + "/Music/";
     }
 
-    public List<MusicInformation> getAllMusicFile(List<RealmMusicInformation> realmMusicInformationList) {
+    public List<MusicInformation> getAllMusicFile(Realm realm) {
         musicInformationList = new ArrayList<>();
         File externalFile = new File(path);
-        scanDirectory(externalFile, realmMusicInformationList);
+        scanDirectory(externalFile, realm);
 
         return musicInformationList;
     }
 
-    public void scanDirectory(File directory, List<RealmMusicInformation> realmMusicInformationList) {
+    public void scanDirectory(File directory, Realm realm) {
         if (directory != null) {
             if (directory.isDirectory()) {
                 File[] files = directory.listFiles();
                 if (files != null && files.length > 0) {
                     for (File file : files) {
-                        scanDirectory(file, realmMusicInformationList);
+                        scanDirectory(file, realm);
                     }
                 }
             } else {
+                List<RealmMusicInformation> realmMusicInformationList = realm.where(RealmMusicInformation.class).findAll();
                 for (RealmMusicInformation rmif : realmMusicInformationList) {
-                    System.out.println(rmif.getName() + "\n" + directory.getName().replace(".mp3", "") + "\n");
+//                    System.out.println(rmif.getName() + "\n" + directory.getName().replace(".mp3", "") + "\n");
                     if (rmif.getName().equals(directory.getName().replace(".mp3", ""))) {
-                        System.out.println("Add +++++++++++++++++++++++++++++++++++++++++++++");
-                        addSongToList(directory, rmif.getId());
+//                        System.out.println("Add +++++++++++++++++++++++++++++++++++++++++++++");
+                        addSongToList(directory, rmif.getId(), realm);
                     }
                 }
             }
         }
     }
 
-    public void addSongToList(File file, int index) {
+    public void addSongToList(File file, int index, Realm realm) {
         MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
         mediaMetadataRetriever.setDataSource(file.getPath());
         byte[] embededPic = mediaMetadataRetriever.getEmbeddedPicture();
@@ -73,6 +75,11 @@ public class ReadFileService {
         musicInformation.setPath(file.getPath());
         musicInformation.setFileName(file.getName());
         musicInformation.setRealmIndex(index);
+
+        RealmMusicInformation toEdit = realm.where(RealmMusicInformation.class).equalTo("id",index).findFirst();
+        realm.beginTransaction();
+        toEdit.setDuration(Integer.parseInt(duration));
+        realm.commitTransaction();
 
         musicInformationList.add(musicInformation);
     }

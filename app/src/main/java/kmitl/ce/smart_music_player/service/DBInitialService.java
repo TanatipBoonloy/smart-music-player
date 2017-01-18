@@ -22,7 +22,7 @@ public class DBInitialService {
 
         if (result.size() < 1) {
             List<String> songName = new ArrayList<>();
-            List<Integer> durations = new ArrayList<>();
+//            List<Integer> durations = new ArrayList<>();
             InputStreamReader is = new InputStreamReader(context.getAssets()
                     .open("music_information.csv"));
 
@@ -32,12 +32,12 @@ public class DBInitialService {
             while ((line = reader.readLine()) != null) {
                 String splitResult[] = line.split(",");
                 songName.add(splitResult[6]);
-                String splitTime[] = splitResult[2].split(":");
-                durations.add(Integer.parseInt(splitTime[1].trim())*60 + Integer.parseInt(splitTime[2].trim()));
+//                String splitTime[] = splitResult[2].split(":");
+//                durations.add(Integer.parseInt(splitTime[1].trim())*60 + Integer.parseInt(splitTime[2].trim()));
             }
 
             final List<String> songNameFinal = songName;
-            final List<Integer> durationsFinal = durations;
+//            final List<Integer> durationsFinal = durations;
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm r) {
@@ -45,13 +45,13 @@ public class DBInitialService {
                     for (String songName : songNameFinal) {
                         RealmMusicInformation rmif = r.createObject(RealmMusicInformation.class, index);
                         rmif.setName(songName);
-                        rmif.setLike(null);
-                        rmif.setListened(false);
-                        rmif.setPath(null);
-                        rmif.setDuration(durationsFinal.get(index - 1));
-                        rmif.setPlayed(0);
+//                        rmif.setLike(null);
+//                        rmif.setListened(false);
+//                        rmif.setPath(null);
+//                        rmif.setDuration(durationsFinal.get(index - 1));
+//                        rmif.setPlayed(0);
                         index++;
-                        System.out.println("add : " + (index - 1));
+//                        System.out.println("add : " + (index - 1));
                     }
                 }
             });

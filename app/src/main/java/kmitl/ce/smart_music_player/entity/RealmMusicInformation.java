@@ -11,11 +11,11 @@ public class RealmMusicInformation extends RealmObject {
     private int id;
 
     private String name;
-    private String path;
-    private Boolean like;
-    private Boolean listened;
+//    private String path;
+//    private Boolean like;
+//    private Boolean listened;
     private Integer duration;
-    private Integer playedTime;
+//    private Integer playedTime;
 
     public void setId(int id) {
         this.id = id;
@@ -25,25 +25,25 @@ public class RealmMusicInformation extends RealmObject {
         this.name = name;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public void setLike(Boolean like) {
-        this.like = like;
-    }
-
-    public void setListened(Boolean listened) {
-        this.listened = listened;
-    }
-
+//    public void setPath(String path) {
+//        this.path = path;
+//    }
+//
+//    public void setLike(Boolean like) {
+//        this.like = like;
+//    }
+//
+//    public void setListened(Boolean listened) {
+//        this.listened = listened;
+//    }
+//
     public void setDuration(Integer duration) {
         this.duration = duration;
     }
-
-    public void setPlayed(Integer playedTime) {
-        this.playedTime = playedTime;
-    }
+//
+//    public void setPlayed(Integer playedTime) {
+//        this.playedTime = playedTime;
+//    }
 
     public int getId() {
         return id;
@@ -53,23 +53,23 @@ public class RealmMusicInformation extends RealmObject {
         return name;
     }
 
-    public String getPath() {
-        return path;
-    }
-
-    public Boolean getLike() {
-        return like;
-    }
-
-    public Boolean getListened() {
-        return listened;
-    }
-
+//    public String getPath() {
+//        return path;
+//    }
+//
+//    public Boolean getLike() {
+//        return like;
+//    }
+//
+//    public Boolean getListened() {
+//        return listened;
+//    }
+//
     public Integer getDuration() {
         return duration;
     }
-
-    public Integer getPlayedTime() {
-        return playedTime;
-    }
+//
+//    public Integer getPlayedTime() {
+//        return playedTime;
+//    }
 }

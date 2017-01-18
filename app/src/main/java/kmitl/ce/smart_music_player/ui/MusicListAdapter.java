@@ -102,32 +102,32 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
             }
         };
 
-        View.OnClickListener onLikeBtn = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MusicViewHolder musicViewHolder = (MusicViewHolder) v.getTag();
-
-                int position = musicViewHolder.getAdapterPosition();
-
-                int rIndex = musicInformationList.get(position).getRealmIndex();
-                RealmResults<RealmMusicInformation> result = realm.where(RealmMusicInformation.class)
-                        .equalTo("id", rIndex)
-                        .findAll();
-                RealmMusicInformation realmMusic = result.get(0);
-                Boolean oldValue = realmMusic.getLike();
-                realm.beginTransaction();
-                if (oldValue == null) {
-                    realmMusic.setLike(true);
-                } else if (oldValue) {
-                    realmMusic.setLike(false);
-                } else {
-                    realmMusic.setLike(null);
-                }
-                realm.commitTransaction();
-
-                notifyItemChanged(position);
-            }
-        };
+//        View.OnClickListener onLikeBtn = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                MusicViewHolder musicViewHolder = (MusicViewHolder) v.getTag();
+//
+//                int position = musicViewHolder.getAdapterPosition();
+//
+//                int rIndex = musicInformationList.get(position).getRealmIndex();
+//                RealmResults<RealmMusicInformation> result = realm.where(RealmMusicInformation.class)
+//                        .equalTo("id", rIndex)
+//                        .findAll();
+//                RealmMusicInformation realmMusic = result.get(0);
+//                Boolean oldValue = realmMusic.getLike();
+//                realm.beginTransaction();
+//                if (oldValue == null) {
+//                    realmMusic.setLike(true);
+//                } else if (oldValue) {
+//                    realmMusic.setLike(false);
+//                } else {
+//                    realmMusic.setLike(null);
+//                }
+//                realm.commitTransaction();
+//
+//                notifyItemChanged(position);
+//            }
+//        };
 
         holder.textView.setOnClickListener(onClickListener);
         holder.imageView.setOnClickListener(onClickListener);
