@@ -4,40 +4,33 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import io.realm.Realm;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import kmitl.ce.smart_music_player.R;
 import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
 import kmitl.ce.smart_music_player.entity.RealmMusicListened;
+import kmitl.ce.smart_music_player.model.MusicInformation;
 import kmitl.ce.smart_music_player.service.DBInitialService;
 import kmitl.ce.smart_music_player.service.PrintResultService;
-import org.w3c.dom.Text;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import kmitl.ce.smart_music_player.R;
-import kmitl.ce.smart_music_player.model.MusicInformation;
 import kmitl.ce.smart_music_player.service.ReadFileService;
 import kmitl.ce.smart_music_player.service.Utility;
 
@@ -49,11 +42,14 @@ public class PlaylistActivity extends AppCompatActivity {
     private ReadFileService readFileService;
     private MediaPlayer mediaPlayer;
     private int currentPosition;
-    private int currentSongInt;
+    //    private int currentSongInt;
+    private int currentSongPlaying;
+    private int currentSongIndex;
     private boolean isRepeat = false;
     private boolean isShuffle = false;
-    private List<MusicInformation> musicInformationListRandom;
-    private List<MusicInformation> musicInformationListNormal;
+    private List<Integer> shuffleIndexList;
+    private List<Integer> normalIndexList;
+    private List<Integer> activeIndexList;
 
     private Integer playStateImage = null;
     ImageButton musicPlayingButton;
@@ -68,59 +64,67 @@ public class PlaylistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_playlist);
         realm = Realm.getDefaultInstance();
 
-        musicInformationList = new ArrayList<>();
-        musicInformationListRandom = new ArrayList<>();
-        musicInformationListNormal = new ArrayList<>();
-        readFileService = new ReadFileService();
-        mediaPlayer = new MediaPlayer();
+        this.musicInformationList = new ArrayList<>();
+        this.normalIndexList = new ArrayList<>();
+        this.readFileService = new ReadFileService();
+        this.mediaPlayer = new MediaPlayer();
 
         try {
-            realmMusicInformationList = DBInitialService.initialize(realm, this);
+            this.realmMusicInformationList = DBInitialService.initialize(this.realm, this);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-
         getMusicList();
-        musicInformationListNormal = musicInformationList;
-
+        for (int i = 0; i < this.musicInformationList.size(); i++) {
+            this.normalIndexList.add(i);
+        }
+        this.activeIndexList = this.normalIndexList;
 
         final Toolbar musicListToolbar = (Toolbar) findViewById(R.id.music_list_toolbar);
         setSupportActionBar(musicListToolbar);
-        musicPlayingButton = (ImageButton) findViewById(R.id.music_playing_button);
+        this.musicPlayingButton = (ImageButton) findViewById(R.id.music_playing_button);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        this.mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new MusicListAdapter(PlaylistActivity.this, musicInformationList, realm);
-        mRecyclerView.setAdapter(mAdapter);
+        this.mAdapter = new MusicListAdapter(PlaylistActivity.this, this.musicInformationList, this.realm);
+        this.mRecyclerView.setAdapter(this.mAdapter);
 
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        this.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             public void onCompletion(MediaPlayer mp) {
-                currentSongInt += 1;
-                if (currentSongInt == musicInformationList.size()) {
-                    currentSongInt = 0;
-                }
-
-                if (isShuffle) {
-                    playSong(currentSongInt); //changed playlist
-                } else if (isRepeat) {
-                    playSong(currentSongInt);// repeat all list
+                System.out.println(getIsRepeat());
+                Integer toIndex = null;
+                if(currentSongIndex + 1 >= activeIndexList.size()) {
+                    if(getIsRepeat()) {
+                        toIndex = 0;
+                    }
                 } else {
-                    playSong(currentSongInt); //no repeat,no shuffle,play next song
-
+                    toIndex = currentSongIndex + 1;
                 }
+//                Integer toIndex = (currentSongIndex + 1 >= activeIndexList.size()) ?
+//                        (PlaylistActivity.this.getIsRepeat()) ?
+//                                0 : null
+//                        : currentSongIndex + 1;
+                if(toIndex != null){
+                    playSong(toIndex);
+                }
+//                if (isShuffle) {
+//                    playSong(currentSongInt); //changed playlist
+//                } else if (isRepeat) {
+//                    playSong(currentSongInt);// repeat all list
+//                } else {
+//                    playSong(currentSongInt); //no repeat,no shuffle,play next song
+//                }
             }
         });
 
         musicListToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PrintResultService.printResult(PlaylistActivity.this,realm);
+                PrintResultService.printResult(PlaylistActivity.this, PlaylistActivity.this.realm);
             }
         });
-        musicInformationListRandom = musicInformationList;
-        //setMusicInformationListRandom();
     }
 
     @Override
@@ -130,7 +134,8 @@ public class PlaylistActivity extends AppCompatActivity {
     }
 
     public void playSong(int position) {
-        currentSongInt = position;
+        this.currentSongPlaying = position;
+        this.currentSongIndex = (isShuffle) ? this.activeIndexList.indexOf(position) : position;
         play();
         setPlayToolBar();
     }
@@ -173,10 +178,10 @@ public class PlaylistActivity extends AppCompatActivity {
     public void play() {
         if (mediaPlayer.isPlaying()) {
             int position = mediaPlayer.getCurrentPosition();
-            setPlayTime(position,musicInformationList.get(currentSongInt).getRealmIndex());
+            setPlayTime(position, getMusicInformation().getRealmIndex());
         }
 
-        MusicInformation musicInformation = musicInformationList.get(currentSongInt);
+        MusicInformation musicInformation = getMusicInformation();
         mediaPlayer.reset();
 
         try {
@@ -189,14 +194,11 @@ public class PlaylistActivity extends AppCompatActivity {
     }
 
     public void setPlayToolBar() {
-        MusicInformation musicInformation = musicInformationList.get(currentSongInt);
         playStateImage = R.drawable.pause_button;
         updatePlayButton(musicPlayingButton);
 
-
         TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
         musicPlayingTitle.setTextSize(20);
-
 
         musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(), 0));
 
@@ -232,7 +234,6 @@ public class PlaylistActivity extends AppCompatActivity {
                 playStateImage = R.drawable.play_button;
                 mediaPlayer.pause();
                 currentPosition = mediaPlayer.getCurrentPosition();
-//                setPlayTime(currentPosition,currentSongInt);
             } else {
                 playStateImage = R.drawable.pause_button;
                 mediaPlayer.seekTo(currentPosition);
@@ -258,7 +259,7 @@ public class PlaylistActivity extends AppCompatActivity {
 
 
     public MusicInformation getMusicInformation() {
-        return musicInformationList.get(currentSongInt);
+        return musicInformationList.get(this.currentSongPlaying);
     }
 
     public MediaPlayer getMediaPlayer() {
@@ -266,45 +267,44 @@ public class PlaylistActivity extends AppCompatActivity {
     }
 
     public void nextSong() {
-        this.currentSongInt = this.currentSongInt + 1;
-        if (this.currentSongInt >= musicInformationList.size()) {
-            this.currentSongInt = 0;
-        }
+        System.out.println(this.currentSongPlaying);
+        this.currentSongIndex = (this.currentSongIndex + 1 >= this.activeIndexList.size()) ?
+                0 : this.currentSongIndex + 1;
+        this.currentSongPlaying = this.activeIndexList.get(this.currentSongIndex);
+        System.out.println(this.currentSongPlaying);
+//        if (this.currentSongInt >= musicInformationList.size()) {
+//            this.currentSongInt = 0;
+//        }
         play();
     }
 
     public void previousSong() {
-        this.currentSongInt = this.currentSongInt - 1;
-
-        if (this.currentSongInt < 0) {
-            this.currentSongInt = musicInformationList.size() - 1;
-        }
+//        this.currentSongInt = this.currentSongInt - 1;
+        this.currentSongIndex = (this.currentSongIndex - 1 < 0) ?
+                this.activeIndexList.size() : this.currentSongIndex - 1;
+        this.currentSongPlaying = this.activeIndexList.get(this.currentSongIndex);
+//        if (this.currentSongInt < 0) {
+//            this.currentSongInt = musicInformationList.size() - 1;
+//        }
         play();
     }
 
-    public void setMusicInformationListRandom() {
-        //Sample Random
-        /*musicInformationListRandom.add(musicInformationList.get(2));
-        musicInformationListRandom.add(musicInformationList.get(1));
-        musicInformationListRandom.add(musicInformationList.get(0));
-        musicInformationListRandom.add(musicInformationList.get(3));
-        musicInformationListRandom.add(musicInformationList.get(4));
-        musicInformationListRandom.add(musicInformationList.get(6));
-        musicInformationListRandom.add(musicInformationList.get(5));*/
-
-
+    public void setIsRepeat(boolean isRepeat) {
+        this.isRepeat = isRepeat;
     }
 
-    public void setIsRepeat(boolean change) {
-        this.isRepeat = change;
-    }
-
-    public void setIsShuffle(boolean change) {
-        this.isShuffle = change;
-        if (isShuffle == true) {
-            musicInformationList = musicInformationListRandom;
+    public void setIsShuffle(boolean isShuffle) {
+        this.isShuffle = isShuffle;
+        if (this.isShuffle == true) {
+            this.shuffleIndexList = new ArrayList<>();
+            for (int i = 0; i < this.musicInformationList.size(); i++) {
+                this.shuffleIndexList.add(i);
+            }
+            Collections.shuffle(this.shuffleIndexList);
+            this.activeIndexList = this.shuffleIndexList;
         } else {
-            musicInformationList = musicInformationListNormal;
+            this.currentSongIndex = this.currentSongPlaying;
+            this.activeIndexList = this.normalIndexList;
         }
     }
 
@@ -322,15 +322,14 @@ public class PlaylistActivity extends AppCompatActivity {
         musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(), 0));
     }
 
-    private void setPlayTime(int playTime,int rIndex){
+    private void setPlayTime(int playTime, int rIndex) {
         RealmResults<RealmMusicInformation> result = realm.where(RealmMusicInformation.class)
                 .equalTo("id", rIndex)
                 .findAll();
         RealmMusicInformation realmMusic = result.get(0);
         realm.beginTransaction();
-//        realmMusic.setPlayed(playTime/1000);
         Number id = realm.where(RealmMusicListened.class).max("id");
-        int index = (id != null)? id.intValue() + 1 : 1;
+        int index = (id != null) ? id.intValue() + 1 : 1;
         RealmMusicListened realmMusicListened = realm.createObject(RealmMusicListened.class,
                 index);
         realmMusicListened.setRealmMusicInformation(realmMusic);

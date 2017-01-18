@@ -1,15 +1,16 @@
 package kmitl.ce.smart_music_player.service;
 
 import android.content.Context;
-import io.realm.Realm;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
-import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
+import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
 
 /**
  * Created by Jo on 10/20/2016.
