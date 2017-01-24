@@ -21,7 +21,7 @@ public class PrintResultService {
         try{
             String songsPath = Environment.getExternalStorageDirectory().getPath() + "/Results/music_result.csv";
             String listenedPath = Environment.getExternalStorageDirectory().getPath() + "/Results/music_listened.csv";
-
+            int listenedSize = 0;
             File externalFile = new File(songsPath);
             FileOutputStream outputStream = new FileOutputStream(externalFile);
             RealmQuery<RealmMusicInformation> query = realm.where(RealmMusicInformation.class);
@@ -39,7 +39,7 @@ public class PrintResultService {
             outputStream = new FileOutputStream(externalFile);
             RealmQuery<RealmMusicListened> listenedRealmQuery = realm.where(RealmMusicListened.class);
             RealmResults<RealmMusicListened> listenedRealmResults = listenedRealmQuery.findAll();
-
+            listenedSize = listenedRealmResults.size();
             for(RealmMusicListened realmMusicListened : listenedRealmResults ) {
                 String string = realmMusicListened.getId() + "," + realmMusicListened.getRealmMusicInformation().getId() + "," + realmMusicListened.getPlayTimed() + "\n";
                 outputStream.write(string.getBytes());
@@ -47,7 +47,7 @@ public class PrintResultService {
 
             outputStream.close();
 
-            Toast.makeText(context, "Result Saved.",
+            Toast.makeText(context, "Listened : " + listenedSize + " Saved.",
                     Toast.LENGTH_LONG).show();
             outputStream.close();
 

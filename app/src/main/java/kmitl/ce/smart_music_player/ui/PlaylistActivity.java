@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -82,6 +83,7 @@ public class PlaylistActivity extends AppCompatActivity {
         final Toolbar musicListToolbar = (Toolbar) findViewById(R.id.music_list_toolbar);
         setSupportActionBar(musicListToolbar);
         this.musicPlayingButton = (ImageButton) findViewById(R.id.music_playing_button);
+        musicPlayingButton.setMaxWidth((new DisplayMetrics().widthPixels) * 30 / 100);
 
         this.mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -128,7 +130,6 @@ public class PlaylistActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        realm.close();
     }
 
     public void playSong(int position) {
@@ -195,14 +196,20 @@ public class PlaylistActivity extends AppCompatActivity {
     public void setPlayToolBar() {
         playStateImage = R.drawable.pause_button;
         updatePlayButton(musicPlayingButton);
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        int screenWidth = displaymetrics.widthPixels;
 
         TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
-        musicPlayingTitle.setTextSize(20);
+        musicPlayingTitle.setWidth((screenWidth) * 70 / 100);
 
         musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(), 0));
 
         Toolbar musicPlayingBar = (Toolbar) findViewById(R.id.music_list_playing);
         setSupportActionBar(musicPlayingBar);
+
+//        holder.textView.setWidth((screenWidth) * 80 / 100);
+//        holder.imageView.setMaxWidth((screenWidth) * 20 / 100);
+        musicPlayingBar.setVisibility(View.VISIBLE);
 
         musicPlayingBar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -324,7 +331,6 @@ public class PlaylistActivity extends AppCompatActivity {
 
     public void updateSongName() {
         TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
-        musicPlayingTitle.setTextSize(20);
         musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(), 0));
     }
 

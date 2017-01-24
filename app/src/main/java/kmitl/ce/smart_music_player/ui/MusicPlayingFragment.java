@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -46,6 +48,7 @@ public class MusicPlayingFragment extends DialogFragment {
 
     public static MusicPlayingFragment newInstance() {
         MusicPlayingFragment fragment = new MusicPlayingFragment();
+        fragment.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme );
         return fragment;
     }
 
@@ -55,9 +58,21 @@ public class MusicPlayingFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
+//        Dialog dialog = super.onCreateDialog(savedInstanceState);
 
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+//        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+
+        final RelativeLayout root = new RelativeLayout(getActivity());
+        root.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        // creating the fullscreen dialog
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(root);
+//        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.YELLOW));
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+
         return dialog;
     }
 
@@ -72,6 +87,12 @@ public class MusicPlayingFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 //        return super.onCreateView(inflater, container, savedInstanceState);
         final View rootView = inflater.inflate(R.layout.music_playing_fragment, container, false);
+
+        rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//        Dialog dialog = new Dialog(rootView.getContext());
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        dialog.setContentView(rootView);
+//        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         this.mediaPlayer = ((PlaylistActivity) getActivity()).getMediaPlayer();
         this.songNameView = (TextView) rootView.findViewById(R.id.song_name);
@@ -187,6 +208,17 @@ public class MusicPlayingFragment extends DialogFragment {
 
         return rootView;
     }
+
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        Dialog dialog = getDialog();
+//        if (dialog != null) {
+//            Window window = dialog.getWindow();
+//            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        }
+//    }
 
     private void setImageView() {
         //ImageView

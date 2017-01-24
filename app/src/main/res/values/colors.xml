@@ -2,5 +2,11 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorBackground">#eeeeee</color>
+    <color name="colorCardBG">#e5e5e5</color>
+    <color name="colorText">#303030</color>
+    <color name="colorButton">#eeeeee</color>
+    <color name="colorLine">#d0d0d0</color>
+    <color name="colorPlaybar">#cecece</color>
     <color name="colorAccent">#FF4081</color>
 </resources>

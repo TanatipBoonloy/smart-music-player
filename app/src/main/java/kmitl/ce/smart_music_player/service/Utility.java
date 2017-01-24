@@ -8,8 +8,8 @@ public class Utility {
 
     public static String subStringTitle(String str, int type) {
         if (type == 0) {//mRecycle
-            if (str.length() > 22) {
-                return str.substring(0, 22) + "...";
+            if (str.length() > 28) {
+                return str.substring(0, 28) + "...";
             } else return str;
         } else if (type == 1) {//MusicPlayingFragment
             if (str.length() > 29) {
