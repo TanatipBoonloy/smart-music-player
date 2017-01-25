@@ -19,15 +19,55 @@ public class ReadFileService {
     private List<MusicInformation> musicInformationList;
 
     public ReadFileService() {
-        path = Environment.getExternalStorageDirectory().getPath() + "/Music/";
+        path = Environment.getExternalStorageDirectory().getPath();
     }
 
     public List<MusicInformation> getAllMusicFile(Realm realm) {
         musicInformationList = new ArrayList<>();
-        File externalFile = new File(path);
-        scanDirectory(externalFile, realm);
+//        File musicDirectory = new File(path);
+        File musicDirectory = getMusicDirectory(this.path);
+        scanDirectory(musicDirectory, realm);
 
         return musicInformationList;
+    }
+
+    private File getMusicDirectory(String path) {
+        String[] directorys = path.split("/");
+        File rootDirectory = null;
+        for (String directory : directorys) {
+            if (directory.length() > 0) {
+                rootDirectory = new File(directory);
+                break;
+            }
+        }
+        return findMusicDirectory(rootDirectory);
+    }
+
+    private File findMusicDirectory(File directory) {
+        if (directory.exists()) {
+            if (directory.isDirectory()) {
+                if (directory.getName().equals("ProjectMusic")) {
+                    return directory;
+                } else {
+                    File[] directories = directory.listFiles();
+                    if (directories != null && directories.length > 0) {
+                        for (File eachDirectory : directories) {
+                            File isMusicDirectory = findMusicDirectory(eachDirectory);
+                            if (isMusicDirectory != null) {
+                                return isMusicDirectory;
+                            }
+                        }
+                        return null;
+                    } else {
+                        return null;
+                    }
+                }
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     public void scanDirectory(File directory, Realm realm) {
@@ -76,7 +116,7 @@ public class ReadFileService {
         musicInformation.setFileName(file.getName());
         musicInformation.setRealmIndex(index);
 
-        RealmMusicInformation toEdit = realm.where(RealmMusicInformation.class).equalTo("id",index).findFirst();
+        RealmMusicInformation toEdit = realm.where(RealmMusicInformation.class).equalTo("id", index).findFirst();
         realm.beginTransaction();
         toEdit.setDuration(Integer.parseInt(duration));
         realm.commitTransaction();
