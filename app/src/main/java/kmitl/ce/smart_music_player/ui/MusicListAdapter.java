@@ -2,6 +2,7 @@ package kmitl.ce.smart_music_player.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
@@ -75,7 +76,9 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
         byte[] thumbnail = musicInformationList.get(position).getThumbnail();
         if (thumbnail != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
-            holder.imageView.setImageBitmap(bitmap);
+//            holder.imageView.setImageBitmap(bitmap);
+            int sizePx = convertDpToPixel(50);
+            holder.imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap,sizePx,sizePx,false));
         } else {
             Picasso.with(mContext).load(R.drawable.musical_note).into(holder.imageView);
         }
@@ -152,5 +155,12 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
             this.textView = (TextView) view.findViewById(R.id.music_title);
             //this.likeButton = (Button) view.findViewById(R.id.like_button);
         }
+    }
+
+    private int convertDpToPixel(int dp)
+    {
+        DisplayMetrics metrics =  mContext.getResources().getDisplayMetrics();
+        int px = (int)(dp * (metrics.densityDpi / 160f));
+        return px;
     }
 }

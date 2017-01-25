@@ -87,8 +87,13 @@ public class PlaylistActivity extends AppCompatActivity {
 
         this.mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        this.mRecyclerView.setHasFixedSize(true);
+        this.mRecyclerView.setItemViewCacheSize(30);
+        this.mRecyclerView.setDrawingCacheEnabled(true);
+        this.mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
         this.mAdapter = new MusicListAdapter(PlaylistActivity.this, this.musicInformationList, this.realm);
+
         this.mRecyclerView.setAdapter(this.mAdapter);
 
         this.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
