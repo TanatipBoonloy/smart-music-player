@@ -88,7 +88,7 @@ public class PlaylistActivity extends AppCompatActivity {
         this.mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.mRecyclerView.setHasFixedSize(true);
-        this.mRecyclerView.setItemViewCacheSize(30);
+        this.mRecyclerView.setItemViewCacheSize(100);
         this.mRecyclerView.setDrawingCacheEnabled(true);
         this.mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
