@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import kmitl.ce.smart_music_player.R;
+import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
 import kmitl.ce.smart_music_player.model.MusicInformation;
 import kmitl.ce.smart_music_player.service.Utility;
 
@@ -31,7 +32,7 @@ import kmitl.ce.smart_music_player.service.Utility;
 public class MusicPlayingFragment extends DialogFragment {
     public static final String KEY_MESSAGE = "music_inform";
 
-    private MusicInformation musicInformation;
+//    private MusicInformation musicInformation;
     private SeekBar seekBarprocess;
     private TextView songCurrentDuration;
     private TextView songTotalDuration;
@@ -222,7 +223,7 @@ public class MusicPlayingFragment extends DialogFragment {
 
     private void setImageView() {
         //ImageView
-        byte[] thumbnail = ((PlaylistActivity) getActivity()).getMusicInformation().getThumbnail();
+        byte[] thumbnail = ((PlaylistActivity) getActivity()).getRealmMusicInformation().getThumnail();
         if (thumbnail != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
             imageView.setImageBitmap(bitmap);
@@ -257,12 +258,12 @@ public class MusicPlayingFragment extends DialogFragment {
     }
 
     private void setUpMusicPlayerView() {
-        musicInformation = ((PlaylistActivity) getActivity()).getMusicInformation();
-        songNameView.setText(Utility.subStringTitle(musicInformation.getTitle(), 1));
-        artistNameView.setText(musicInformation.getArtist());
+        RealmMusicInformation realmMusicInformation = ((PlaylistActivity) getActivity()).getRealmMusicInformation();
+        songNameView.setText(Utility.subStringTitle(realmMusicInformation.getTitle(), 1));
+        artistNameView.setText(realmMusicInformation.getArtist());
         setImageView();
-        seekBarprocess.setMax(musicInformation.getDuration() / 1000);
-        songTotalDuration.setText(getTimeString(musicInformation.getDuration()));
+        seekBarprocess.setMax(realmMusicInformation.getDuration() / 1000);
+        songTotalDuration.setText(getTimeString(realmMusicInformation.getDuration()));
     }
 
     private String getTimeString(Integer millisec) {

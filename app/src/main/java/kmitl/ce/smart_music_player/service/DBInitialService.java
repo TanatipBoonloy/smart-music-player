@@ -27,7 +27,6 @@ public class DBInitialService {
                     .open("music_information.csv"));
 
             BufferedReader reader = new BufferedReader(is);
-            reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
                 String splitResult[] = line.split(",");

@@ -16,6 +16,14 @@ public class RealmMusicInformation extends RealmObject {
 //    private Boolean listened;
     private Integer duration;
 //    private Integer playedTime;
+    private String title;
+    private byte[] thumnail;
+    private String artist;
+    private String year;
+    private String genre;
+    private String album;
+    private String path;
+    private String fileName;
 
     public void setId(int id) {
         this.id = id;
@@ -45,6 +53,38 @@ public class RealmMusicInformation extends RealmObject {
 //        this.playedTime = playedTime;
 //    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setThumnail(byte[] thumnail) {
+        this.thumnail = thumnail;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public int getId() {
         return id;
     }
@@ -72,4 +112,36 @@ public class RealmMusicInformation extends RealmObject {
 //    public Integer getPlayedTime() {
 //        return playedTime;
 //    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public byte[] getThumnail() {
+        return thumnail;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
 }

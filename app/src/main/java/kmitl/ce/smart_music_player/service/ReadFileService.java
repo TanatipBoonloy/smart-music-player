@@ -16,19 +16,22 @@ import kmitl.ce.smart_music_player.model.MusicInformation;
  */
 public class ReadFileService {
     private String path;
-    private List<MusicInformation> musicInformationList;
+//    private List<MusicInformation> musicInformationList;
 
     public ReadFileService() {
         path = Environment.getExternalStorageDirectory().getPath();
     }
 
-    public List<MusicInformation> getAllMusicFile(Realm realm) {
-        musicInformationList = new ArrayList<>();
+//    public List<MusicInformation> getAllMusicFile(Realm realm) {
+    public void getAllMusicFile(Realm realm) {
+//        musicInformationList = new ArrayList<>();
 //        File musicDirectory = new File(path);
-        File musicDirectory = getMusicDirectory(this.path);
-        scanDirectory(musicDirectory, realm);
+        if(realm.where(RealmMusicInformation.class).count() > 0) {
+            File musicDirectory = getMusicDirectory(this.path);
+            scanDirectory(musicDirectory, realm);
+        }
 
-        return musicInformationList;
+//        return musicInformationList;
     }
 
     private File getMusicDirectory(String path) {
@@ -104,23 +107,31 @@ public class ReadFileService {
         String duration = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
         mediaMetadataRetriever.release();
 
-        MusicInformation musicInformation = new MusicInformation();
-        musicInformation.setTitle(title);
-        musicInformation.setThumbnail(embededPic);
-        musicInformation.setArtist(artist);
-        musicInformation.setYear(year);
-        musicInformation.setGenre(genre);
-        musicInformation.setAlbum(album);
-        musicInformation.setDuration(Integer.parseInt(duration));
-        musicInformation.setPath(file.getPath());
-        musicInformation.setFileName(file.getName());
-        musicInformation.setRealmIndex(index);
+//        MusicInformation musicInformation = new MusicInformation();
+//        musicInformation.setTitle(title);
+//        musicInformation.setThumbnail(embededPic);
+//        musicInformation.setArtist(artist);
+//        musicInformation.setYear(year);
+//        musicInformation.setGenre(genre);
+//        musicInformation.setAlbum(album);
+//        musicInformation.setDuration(Integer.parseInt(duration));
+//        musicInformation.setPath(file.getPath());
+//        musicInformation.setFileName(file.getName());
+//        musicInformation.setRealmIndex(index);
 
-        RealmMusicInformation toEdit = realm.where(RealmMusicInformation.class).equalTo("id", index).findFirst();
+        RealmMusicInformation realmObj = realm.where(RealmMusicInformation.class).equalTo("id", index).findFirst();
         realm.beginTransaction();
-        toEdit.setDuration(Integer.parseInt(duration));
+        realmObj.setTitle(title);
+        realmObj.setThumnail(embededPic);
+        realmObj.setArtist(artist);
+        realmObj.setYear(year);
+        realmObj.setGenre(genre);
+        realmObj.setAlbum(album);
+        realmObj.setDuration(Integer.parseInt(duration));
+        realmObj.setPath(file.getPath());
+        realmObj.setFileName(file.getName());
         realm.commitTransaction();
 
-        musicInformationList.add(musicInformation);
+//        musicInformationList.add(musicInformation);
     }
 }

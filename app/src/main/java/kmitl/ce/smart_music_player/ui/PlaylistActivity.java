@@ -29,7 +29,6 @@ import io.realm.RealmResults;
 import kmitl.ce.smart_music_player.R;
 import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
 import kmitl.ce.smart_music_player.entity.RealmMusicListened;
-import kmitl.ce.smart_music_player.model.MusicInformation;
 import kmitl.ce.smart_music_player.service.DBInitialService;
 import kmitl.ce.smart_music_player.service.PrintResultService;
 import kmitl.ce.smart_music_player.service.ReadFileService;
@@ -39,7 +38,7 @@ public class PlaylistActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    private List<MusicInformation> musicInformationList;
+//    private List<MusicInformation> musicInformationList;
     private ReadFileService readFileService;
     private MediaPlayer mediaPlayer;
     private Integer currentPosition;
@@ -63,7 +62,7 @@ public class PlaylistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_playlist);
         realm = Realm.getDefaultInstance();
 
-        this.musicInformationList = new ArrayList<>();
+//        this.musicInformationList = new ArrayList<>();
         this.normalIndexList = new ArrayList<>();
         this.readFileService = new ReadFileService();
         this.mediaPlayer = new MediaPlayer();
@@ -75,7 +74,11 @@ public class PlaylistActivity extends AppCompatActivity {
         }
 
         getMusicList();
-        for (int i = 0; i < this.musicInformationList.size(); i++) {
+//        for (int i = 0; i < this.musicInformationList.size(); i++) {
+//            this.normalIndexList.add(i);
+//        }
+        int count = (int)this.realm.where(RealmMusicInformation.class).count();
+        for(int i = 0 ; i < count; i ++ ) {
             this.normalIndexList.add(i);
         }
         this.activeIndexList = this.normalIndexList;
@@ -92,7 +95,7 @@ public class PlaylistActivity extends AppCompatActivity {
         this.mRecyclerView.setDrawingCacheEnabled(true);
         this.mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
-        this.mAdapter = new MusicListAdapter(PlaylistActivity.this, this.musicInformationList, this.realm);
+        this.mAdapter = new MusicListAdapter(PlaylistActivity.this, this.realm);
 
         this.mRecyclerView.setAdapter(this.mAdapter);
 
@@ -154,10 +157,10 @@ public class PlaylistActivity extends AppCompatActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    musicInformationList = readFileService.getAllMusicFile(realm);
+                    readFileService.getAllMusicFile(realm);
 
                 } else {
-                    musicInformationList = new ArrayList<>();
+
                 }
                 return;
             }
@@ -173,10 +176,10 @@ public class PlaylistActivity extends AppCompatActivity {
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             } else {
-                musicInformationList = readFileService.getAllMusicFile(realm);
+                readFileService.getAllMusicFile(realm);
             }
         } else {
-            musicInformationList = readFileService.getAllMusicFile(realm);
+            readFileService.getAllMusicFile(realm);
         }
     }
 
@@ -186,11 +189,11 @@ public class PlaylistActivity extends AppCompatActivity {
 //            setPlayTime(position, getMusicInformation().getRealmIndex());
 //        }
 
-        MusicInformation musicInformation = getMusicInformation();
+        RealmMusicInformation realmMusicInformation = getRealmMusicInformation();
         mediaPlayer.reset();
 
         try {
-            mediaPlayer.setDataSource(musicInformation.getPath());
+            mediaPlayer.setDataSource(realmMusicInformation.getPath());
             mediaPlayer.prepare();
             mediaPlayer.start();
         } catch (Exception e) {
@@ -207,7 +210,7 @@ public class PlaylistActivity extends AppCompatActivity {
         TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
         musicPlayingTitle.setWidth((screenWidth) * 70 / 100);
 
-        musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(), 0));
+        musicPlayingTitle.setText(Utility.subStringTitle(getRealmMusicInformation().getTitle(), 0));
 
         Toolbar musicPlayingBar = (Toolbar) findViewById(R.id.music_list_playing);
         setSupportActionBar(musicPlayingBar);
@@ -269,13 +272,15 @@ public class PlaylistActivity extends AppCompatActivity {
     }
 
 
-    public MusicInformation getMusicInformation() {
+    public RealmMusicInformation getRealmMusicInformation() {
 //        if( this.currentSongPlaying != null) {
 //            return musicInformationList.get(this.currentSongPlaying);
 //        } else {
 //            return null;
 //        }
-        return (this.currentSongPlaying != null) ? musicInformationList.get(this.currentSongPlaying) : null;
+        return (this.currentSongPlaying != null) ? realm.where(RealmMusicInformation.class)
+                .findAll()
+                .get(this.currentSongPlaying) : null;
     }
 
     public MediaPlayer getMediaPlayer() {
@@ -315,7 +320,8 @@ public class PlaylistActivity extends AppCompatActivity {
         this.isShuffle = isShuffle;
         if (this.isShuffle == true) {
             this.shuffleIndexList = new ArrayList<>();
-            for (int i = 0; i < this.musicInformationList.size(); i++) {
+            int count = (int)this.realm.where(RealmMusicInformation.class).count();
+            for (int i = 0; i < count ; i++) {
                 this.shuffleIndexList.add(i);
             }
             Collections.shuffle(this.shuffleIndexList);
@@ -336,7 +342,7 @@ public class PlaylistActivity extends AppCompatActivity {
 
     public void updateSongName() {
         TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
-        musicPlayingTitle.setText(Utility.subStringTitle(getMusicInformation().getTitle(), 0));
+        musicPlayingTitle.setText(Utility.subStringTitle(getRealmMusicInformation().getTitle(), 0));
     }
 
 //    private void setPlayTimeOnComplete() {
@@ -358,11 +364,11 @@ public class PlaylistActivity extends AppCompatActivity {
         int rIndex;
         if (this.mediaPlayer.isPlaying()) {
             playTime = this.mediaPlayer.getCurrentPosition();
-            rIndex = getMusicInformation().getRealmIndex();
+            rIndex = getRealmMusicInformation().getId();
         } else {
-            if (getMusicInformation() != null) {
-                playTime = getMusicInformation().getDuration();
-                rIndex = getMusicInformation().getRealmIndex();
+            if (getRealmMusicInformation() != null) {
+                playTime = getRealmMusicInformation().getDuration();
+                rIndex = getRealmMusicInformation().getId();
             } else {
                 return;
             }
