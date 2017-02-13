@@ -17,8 +17,8 @@ import kmitl.ce.smart_music_player.entity.RealmMusicListened;
  * Created by Jo on 10/20/2016.
  */
 public class PrintResultService {
-    public static void printResult(Context context,Realm realm) {
-        try{
+    public static void printResult(Context context, Realm realm) {
+        try {
             String songsPath = Environment.getExternalStorageDirectory().getPath() + "/Results/music_result.csv";
             String listenedPath = Environment.getExternalStorageDirectory().getPath() + "/Results/music_listened.csv";
             int listenedSize = 0;
@@ -28,8 +28,8 @@ public class PrintResultService {
             RealmResults<RealmMusicInformation> result = query.findAll();
 
 //            outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
-            for(RealmMusicInformation realmMusicInformation : result) {
-                String string = realmMusicInformation.getName() + "," + realmMusicInformation.getDuration() + "\n";
+            for (RealmMusicInformation realmMusicInformation : result) {
+                String string = realmMusicInformation.getId() + "," + realmMusicInformation.getName() + "," + realmMusicInformation.getDuration() + "\n";
                 outputStream.write(string.getBytes());
             }
 
@@ -40,7 +40,7 @@ public class PrintResultService {
             RealmQuery<RealmMusicListened> listenedRealmQuery = realm.where(RealmMusicListened.class);
             RealmResults<RealmMusicListened> listenedRealmResults = listenedRealmQuery.findAll();
             listenedSize = listenedRealmResults.size();
-            for(RealmMusicListened realmMusicListened : listenedRealmResults ) {
+            for (RealmMusicListened realmMusicListened : listenedRealmResults) {
                 String string = realmMusicListened.getId() + "," + realmMusicListened.getRealmMusicInformation().getId() + "," + realmMusicListened.getPlayTimed() + "\n";
                 outputStream.write(string.getBytes());
             }
