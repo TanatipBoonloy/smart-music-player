@@ -3,6 +3,8 @@ package kmitl.ce.smart_music_player.ui;
 import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -81,7 +84,11 @@ public class MusicPlayingFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+//        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
     }
+
+
 
     @Nullable
     @Override
@@ -89,11 +96,14 @@ public class MusicPlayingFragment extends DialogFragment {
 //        return super.onCreateView(inflater, container, savedInstanceState);
         final View rootView = inflater.inflate(R.layout.music_playing_fragment, container, false);
 
-        rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-//        Dialog dialog = new Dialog(rootView.getContext());
+
+
+//        rootView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//        Dialog dialdow().setLayout(Viog = new Dialog(rootView.getContext());
 //        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        dialog.setContentView(rootView);
-//        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        dialog.getWinewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
 
         this.mediaPlayer = ((PlaylistActivity) getActivity()).getMediaPlayer();
         this.songNameView = (TextView) rootView.findViewById(R.id.song_name);
@@ -248,6 +258,18 @@ public class MusicPlayingFragment extends DialogFragment {
             stateShuffle = R.drawable.shuffle_arrows;
         }
         Picasso.with(getActivity()).load(stateShuffle).into(shuffleButton);
+    }
+
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
     }
 
     @Override
