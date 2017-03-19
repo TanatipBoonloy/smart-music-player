@@ -38,7 +38,7 @@ public class PlaylistActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-//    private List<MusicInformation> musicInformationList;
+    //    private List<MusicInformation> musicInformationList;
     private ReadFileService readFileService;
     private MediaPlayer mediaPlayer;
     private Integer currentPosition;
@@ -77,8 +77,8 @@ public class PlaylistActivity extends AppCompatActivity {
 //        for (int i = 0; i < this.musicInformationList.size(); i++) {
 //            this.normalIndexList.add(i);
 //        }
-        int count = (int)this.realm.where(RealmMusicInformation.class).count();
-        for(int i = 0 ; i < count; i ++ ) {
+        int count = (int) this.realm.where(RealmMusicInformation.class).count();
+        for (int i = 0; i < count; i++) {
             this.normalIndexList.add(i);
         }
         this.activeIndexList = this.normalIndexList;
@@ -192,12 +192,35 @@ public class PlaylistActivity extends AppCompatActivity {
         RealmMusicInformation realmMusicInformation = getRealmMusicInformation();
         mediaPlayer.reset();
 
-        try {
-            mediaPlayer.setDataSource(realmMusicInformation.getPath());
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-        } catch (Exception e) {
-            e.printStackTrace();
+        // if else to test streaming
+        if (realmMusicInformation.getId() == 1) {
+            mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    mp.reset();
+                    return false;
+                }
+            });
+
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                public void onPrepared(MediaPlayer mp) {
+                    mp.start();
+                }
+            });
+
+            try {
+                mediaPlayer.setDataSource("https://s3-ap-southeast-1.amazonaws.com/kmitl-4d-smp.stream/test/01+Sorry+(feat.+Kurt+Hugo+Schneider.m3u8");
+                mediaPlayer.prepareAsync();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                mediaPlayer.setDataSource(realmMusicInformation.getPath());
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -320,8 +343,8 @@ public class PlaylistActivity extends AppCompatActivity {
         this.isShuffle = isShuffle;
         if (this.isShuffle == true) {
             this.shuffleIndexList = new ArrayList<>();
-            int count = (int)this.realm.where(RealmMusicInformation.class).count();
-            for (int i = 0; i < count ; i++) {
+            int count = (int) this.realm.where(RealmMusicInformation.class).count();
+            for (int i = 0; i < count; i++) {
                 this.shuffleIndexList.add(i);
             }
             Collections.shuffle(this.shuffleIndexList);
