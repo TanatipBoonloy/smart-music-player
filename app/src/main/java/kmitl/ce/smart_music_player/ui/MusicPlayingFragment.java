@@ -85,7 +85,6 @@ public class MusicPlayingFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-//        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
     }
 
 

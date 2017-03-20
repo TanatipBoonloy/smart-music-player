@@ -1,6 +1,7 @@
 package kmitl.ce.smart_music_player.ui;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -34,6 +36,9 @@ import kmitl.ce.smart_music_player.service.PrintResultService;
 import kmitl.ce.smart_music_player.service.ReadFileService;
 import kmitl.ce.smart_music_player.service.Utility;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 public class PlaylistActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
@@ -50,9 +55,12 @@ public class PlaylistActivity extends AppCompatActivity {
     private List<Integer> shuffleIndexList;
     private List<Integer> normalIndexList;
     private List<Integer> activeIndexList;
+    private ProgressBar spinner;
 
     private Integer playStateImage = null;
     ImageButton musicPlayingButton;
+
+    private TextView songHead;
 
     private Realm realm;
 
@@ -98,6 +106,10 @@ public class PlaylistActivity extends AppCompatActivity {
         this.mAdapter = new MusicListAdapter(PlaylistActivity.this, this.realm);
 
         this.mRecyclerView.setAdapter(this.mAdapter);
+
+
+
+
 
         this.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             public void onCompletion(MediaPlayer mp) {

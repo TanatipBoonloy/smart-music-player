@@ -12,52 +12,55 @@
         android:id="@+id/playlist_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/music_list_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/colorPlaybar">
-
-        <TextView
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/music_list_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Songs"
-            android:textColor="@color/colorText"/>
+            android:layout_height="40dp"
+            android:background="@color/colorPlaybar">
 
-    </android.support.v7.widget.Toolbar>
+            <TextView
+                android:id="@+id/songHead"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Songs"
+                android:textColor="@color/colorText" />
+
+        </android.support.v7.widget.Toolbar>
 
         <view
             android:id="@+id/recycler_view"
             class="android.support.v7.widget.RecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
+
+
 
         <android.support.v7.widget.Toolbar
-        android:id="@+id/music_list_playing"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPlaybar"
-        android:visibility="visible"
-        android:minHeight="0dp">
-
-        <ImageButton
-            android:id="@+id/music_playing_button"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:background="@color/colorPlaybar"/>
-
-        <TextView
-            android:id="@+id/music_playing_title"
+            android:id="@+id/music_list_playing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorText"/>
-    </android.support.v7.widget.Toolbar>
+            android:background="@color/colorPlaybar"
+            android:minHeight="0dp"
+            android:visibility="visible">
+
+            <ImageButton
+                android:id="@+id/music_playing_button"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPlaybar"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp" />
+
+            <TextView
+                android:id="@+id/music_playing_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorText" />
+        </android.support.v7.widget.Toolbar>
     </LinearLayout>
-   </LinearLayout>
+</LinearLayout>

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">smart-music-player</string>
+    <string name="facebook_app_id">196723204147975</string>
+    <string name="fb_login_protocol_scheme">fb196723204147975</string>
 </resources>
