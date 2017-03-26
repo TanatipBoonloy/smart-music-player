@@ -1,6 +1,8 @@
 package kmitl.ce.smart_music_player.ui;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -21,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -28,6 +31,8 @@ import kmitl.ce.smart_music_player.R;
 import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
 import kmitl.ce.smart_music_player.model.MusicInformation;
 import kmitl.ce.smart_music_player.service.Utility;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Jo on 8/16/2016.
@@ -215,6 +220,43 @@ public class MusicPlayingFragment extends DialogFragment {
         });
 
         setUpMusicPlayerView();
+
+        //////////////////////////////Test///////////////////////////////
+        final String[] Playlists ={"playlist1","playlsit2"};
+
+
+        final AlertDialog.Builder builder =
+                new AlertDialog.Builder(this.getActivity());
+        builder.setTitle("Add To Playlist");
+        builder.setSingleChoiceItems(Playlists, 0, new DialogInterface.OnClickListener() {
+            String mSelected="";
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mSelected = Playlists[which];
+            }
+        });
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            String mSelected="";
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // ส่วนนี้สำหรับเซฟค่าลง database หรือ SharedPreferences.
+                Toast.makeText(getApplicationContext(), "ok click", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        builder.create();
+
+        ImageView addToPlaylist = (ImageView) rootView.findViewById(R.id.addToPlaylist);
+        addToPlaylist.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                builder.show();
+            }
+        });
+
 
         return rootView;
     }

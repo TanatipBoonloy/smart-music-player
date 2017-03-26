@@ -23,11 +23,11 @@ import kmitl.ce.smart_music_player.service.Utility;
  * Created by Dell on 23/3/2560.
  */
 
-public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapter.PlaylistViewHolder> {
+public class SuggesionListAdapter extends RecyclerView.Adapter<SuggesionListAdapter.PlaylistViewHolder> {
     private Context mContext;
     private Realm realm;
 
-    public PlaylistListAdapter(Context context, Realm realm) {
+    public SuggesionListAdapter(Context context, Realm realm) {
         this.mContext = context;
         this.realm = realm;
     }
@@ -36,12 +36,12 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
     public PlaylistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.suggesion_song_card, null);
 
-        PlaylistListAdapter.PlaylistViewHolder vh = new PlaylistListAdapter.PlaylistViewHolder(view);
+        SuggesionListAdapter.PlaylistViewHolder vh = new SuggesionListAdapter.PlaylistViewHolder(view);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(final PlaylistListAdapter.PlaylistViewHolder holder, int position) {
+    public void onBindViewHolder(final SuggesionListAdapter.PlaylistViewHolder holder, int position) {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         ((Activity) mContext).getWindowManager()
                 .getDefaultDisplay()
@@ -55,7 +55,7 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
                 .findAll()
                 .get(position);
 
-        holder.textView.setText(Utility.subStringTitle(realmMusic.getTitle(), 2));
+        holder.textView.setText(Utility.subStringTitle(setTextModified(realmMusic.getTitle()), 2));
 //        holder.textView.setText(Utility.subStringTitle(musicInformationList.get(position).getTitle(), 2));
         //holder.likeButton.setText("Like");
 
@@ -96,7 +96,7 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlaylistListAdapter.PlaylistViewHolder PlaylistViewHolder = (PlaylistListAdapter.PlaylistViewHolder) v.getTag();
+                SuggesionListAdapter.PlaylistViewHolder PlaylistViewHolder = (SuggesionListAdapter.PlaylistViewHolder) v.getTag();
 
                 int position = PlaylistViewHolder.getAdapterPosition();
 
@@ -141,7 +141,7 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
 
     @Override
     public int getItemCount() {
-        return 5;
+        return 10;
     }
 
     public static class PlaylistViewHolder extends RecyclerView.ViewHolder {
@@ -161,5 +161,9 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
         DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
         int px = (int) (dp * (metrics.densityDpi / 160f));
         return px;
+    }
+
+    private String setTextModified(String str){
+        return str.length()>20 ? str.substring(0,20)+"..." : str;
     }
 }

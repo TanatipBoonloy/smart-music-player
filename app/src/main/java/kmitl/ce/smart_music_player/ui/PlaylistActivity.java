@@ -1,8 +1,8 @@
 package kmitl.ce.smart_music_player.ui;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,14 +11,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -26,20 +29,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import info.hoang8f.android.segmented.SegmentedGroup;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import kmitl.ce.smart_music_player.R;
 import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
 import kmitl.ce.smart_music_player.entity.RealmMusicListened;
 import kmitl.ce.smart_music_player.service.DBInitialService;
-import kmitl.ce.smart_music_player.service.PrintResultService;
 import kmitl.ce.smart_music_player.service.ReadFileService;
 import kmitl.ce.smart_music_player.service.Utility;
 
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-
-public class PlaylistActivity extends AppCompatActivity {
+public class PlaylistActivity extends AppCompatActivity implements  View.OnClickListener {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -60,9 +60,12 @@ public class PlaylistActivity extends AppCompatActivity {
     private Integer playStateImage = null;
     ImageButton musicPlayingButton;
 
-    private TextView songHead;
-
+    private SegmentedGroup segment;
     private Realm realm;
+    private PlaylistFragment playlsitFragment;
+    private RecycleMusicFragment recycleFragment;
+    private RecycleSuggesionFragment recycleSuggesion;
+    private SearchFragment searchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,22 +94,52 @@ public class PlaylistActivity extends AppCompatActivity {
         }
         this.activeIndexList = this.normalIndexList;
 
-        final Toolbar musicListToolbar = (Toolbar) findViewById(R.id.music_list_toolbar);
-        setSupportActionBar(musicListToolbar);
         this.musicPlayingButton = (ImageButton) findViewById(R.id.music_playing_button);
         musicPlayingButton.setMaxWidth((new DisplayMetrics().widthPixels) * 30 / 100);
 
-        this.mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        this.mRecyclerView.setHasFixedSize(true);
-        this.mRecyclerView.setItemViewCacheSize(100);
-        this.mRecyclerView.setDrawingCacheEnabled(true);
-        this.mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
-        this.mAdapter = new MusicListAdapter(PlaylistActivity.this, this.realm);
 
-        this.mRecyclerView.setAdapter(this.mAdapter);
 
+        this.playlsitFragment = new PlaylistFragment();
+        this.recycleFragment = new RecycleMusicFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        //set visible suggesion fragment
+        if(true){
+            this.recycleSuggesion = new RecycleSuggesionFragment();
+            transaction.replace(R.id.contentFragmentSuggesion, recycleSuggesion);
+
+        }else{
+            FrameLayout suggesion = (FrameLayout) findViewById(R.id.contentFragmentSuggesion);
+            suggesion.setVisibility(View.INVISIBLE);
+        }
+
+        transaction.replace(R.id.contentFragment, recycleFragment);
+        transaction.commit();
+
+        segment = (SegmentedGroup) findViewById(R.id.segmented_control);
+        segment.setTintColor(Color.parseColor("#a39b9b"), Color.parseColor("#ffffff"));
+        RadioButton songBtn = (RadioButton) findViewById(R.id.songs);
+        RadioButton playlistBtn = (RadioButton) findViewById(R.id.playlsits);
+
+        //Set listener for button
+        songBtn.setOnClickListener(this);
+        playlistBtn.setOnClickListener(this);
+
+        segment.check(R.id.songs);
+
+
+        //Test--------------------------------------
+        ImageView search = (ImageView) findViewById(R.id.search_icon);
+        this.searchFragment = new SearchFragment();
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                SearchFragment df= new SearchFragment();
+                df.show(getSupportFragmentManager(), "musicPlayingDialog");
+            }
+        });
 
 
 
@@ -139,12 +172,6 @@ public class PlaylistActivity extends AppCompatActivity {
             }
         });
 
-        musicListToolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PrintResultService.printResult(PlaylistActivity.this, PlaylistActivity.this.realm);
-            }
-        });
     }
 
     @Override
@@ -423,4 +450,44 @@ public class PlaylistActivity extends AppCompatActivity {
         realm.commitTransaction();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.songs:
+                songsButton(segment);
+                break;
+            case R.id.playlsits:
+                playlistButton(segment);
+                break;
+            default:
+                // Nothing to do
+        }
+    }
+
+    private void songsButton(SegmentedGroup group) {
+
+        Toast.makeText(this, "library click", Toast.LENGTH_SHORT).show();
+        this.recycleFragment= new RecycleMusicFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.remove(this.playlsitFragment);
+        transaction.replace(R.id.contentFragment, this.recycleFragment);
+//        transaction.addToBackStack(null);
+        transaction.commit();
+
+        this.playlsitFragment.onDestroy();
+    }
+
+    private void playlistButton(SegmentedGroup group) {
+        Toast.makeText(this, "playlist  click", Toast.LENGTH_SHORT).show();
+        this.playlsitFragment= new PlaylistFragment();
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.remove(this.recycleFragment);
+        transaction.replace(R.id.contentFragment, this.playlsitFragment);
+//        transaction.addToBackStack(null);
+        transaction.commit();
+
+        this.recycleFragment.onDestroy();
+
+    }
 }

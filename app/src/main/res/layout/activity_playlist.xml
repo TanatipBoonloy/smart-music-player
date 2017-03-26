@@ -13,32 +13,100 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical|center_horizontal|center"
+        >
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:gravity="center_vertical|center_horizontal|center">-->
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/music_list_toolbar"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@color/colorPlaybar">
+            android:layout_height="wrap_content"
+            android:weightSum="10"
 
-            <TextView
-                android:id="@+id/songHead"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Songs"
-                android:textColor="@color/colorText" />
+           >
+            <ImageView
+                android:id="@+id/refresh"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="1dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/ic_refresh_black_24dp"/>
 
-        </android.support.v7.widget.Toolbar>
+            <info.hoang8f.android.segmented.SegmentedGroup
+                xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/segmented_control"
+                android:layout_width="0dp"
+                android:layout_weight="8"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal"
+                segmentedgroup:sc_border_width="2dp"
+                segmentedgroup:sc_corner_radius="10dp"
+                android:gravity="center_vertical|center_horizontal|center"
+                >
 
-        <view
-            android:id="@+id/recycler_view"
-            class="android.support.v7.widget.RecyclerView"
+                <RadioButton
+                    android:id="@+id/songs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Library"
+                    style="@style/RadioButton"/>
+
+                <RadioButton
+                    android:id="@+id/playlsits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Playlist"
+                    style="@style/RadioButton" />
+
+
+            </info.hoang8f.android.segmented.SegmentedGroup>
+
+            <ImageView
+                android:id="@+id/search_icon"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_search_black_24dp"
+                />
+
+
+        </LinearLayout>
+
+
+
+        <FrameLayout
+            android:id="@+id/contentFragmentSuggesion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="10dp"/>
+
+        <FrameLayout
+            android:id="@+id/contentFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-
+        <!--&lt;!&ndash;<view&ndash;&gt;-->
+            <!--android:id="@+id/recycler_view"-->
+            <!--class="android.support.v7.widget.RecyclerView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1" />-->
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/music_list_playing"

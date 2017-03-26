@@ -9,4 +9,7 @@
     <color name="colorLine">#d0d0d0</color>
     <color name="colorPlaybar">#cecece</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="blue_button">#2C57A6</color>
+    <color name="white">#ffffff</color>
+    <color name="bg_register">#9ac3ea</color>
 </resources>

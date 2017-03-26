@@ -15,7 +15,7 @@ import kmitl.ce.smart_music_player.R;
  * Created by Dell on 23/3/2560.
  */
 
-public class RecyclePlaylistFragment extends Fragment {
+public class RecycleSuggesionFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private Realm realm;
@@ -41,7 +41,7 @@ public class RecyclePlaylistFragment extends Fragment {
                 = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false);
         this.mRecyclerView.setLayoutManager(layoutManager);
 
-        this.mAdapter = new PlaylistListAdapter(this.getActivity() , this.realm);
+        this.mAdapter = new SuggesionListAdapter(this.getActivity() , this.realm);
 
         this.mRecyclerView.setAdapter(this.mAdapter);
 

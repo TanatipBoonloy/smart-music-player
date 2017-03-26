@@ -5,4 +5,13 @@ package kmitl.ce.smart_music_player.model;
  */
 
 public class PlaylistAllInformation {
+    private String[] playlists;
+
+    public String[] getPlaylists() {
+        return playlists;
+    }
+
+    public void setPlaylists(String[] playlists) {
+        this.playlists = playlists;
+    }
 }

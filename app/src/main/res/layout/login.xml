@@ -2,42 +2,60 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@color/com_facebook_button_background_color"
-    android:weightSum="6"
+    android:background="@color/com_facebook_button_login_background_color"
+
     >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical|center_horizontal|center">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/facebook"
-        android:textSize="18sp"
-        android:text="Facebook"
-        android:textColor="@color/com_facebook_button_text_color"
-        android:layout_weight="2"
-        android:layout_marginTop="107dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:id="@+id/facebook"
+            android:textSize="18sp"
+            android:text="Facebook"
+            android:textColor="@color/com_facebook_button_text_color"
+            android:layout_weight="7"
+            android:gravity="center_vertical|center_horizontal|center"
+            />
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginBottom="138dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-    <TextView
-        android:id="@+id/local_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Continue"
-        android:textColor="@color/com_facebook_button_text_color"
-        android:textSize="12sp"
-        android:layout_marginBottom="70dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        <Button
+            android:id="@+id/local_login"
+            android:layout_width="185dp"
+            android:layout_height="12dp"
+            android:layout_weight="0.5"
+            android:text="Continue"
+            android:textColor="@color/com_facebook_button_text_color"
+            android:background="@color/blue_button"
+            android:textSize="12sp"
+            android:layout_marginTop="10dp"/>
+
+        <Button
+            android:id="@+id/register"
+            android:layout_width="185dp"
+            android:layout_height="12dp"
+            android:layout_weight="0.5"
+            android:text="Register"
+            android:textColor="@color/com_facebook_button_text_color"
+            android:background="@color/blue_button"
+            android:textSize="12sp"
+            android:layout_marginTop="10dp"/>
+
+
+    </LinearLayout>
+
 
 
 

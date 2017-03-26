@@ -4,12 +4,14 @@ package kmitl.ce.smart_music_player.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,8 @@ public class Login extends AppCompatActivity {
         private LoginButton loginButton;
         private CallbackManager callbackManager;
         private   Animation anim;
+        private Button continueLogin;
+    private Button register;
 
 
 
@@ -88,6 +92,25 @@ public class Login extends AppCompatActivity {
             }
 
 
+        });
+
+        this.continueLogin = (Button) findViewById(R.id.local_login);
+        this.continueLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                LoginLocalFragment df= new LoginLocalFragment();
+                df.show(getSupportFragmentManager(), "LocalLogin");
+            }
+        });
+
+        this.register = (Button) findViewById(R.id.register);
+        this.register.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                RegisterFragment df= new RegisterFragment();
+                df.show(getSupportFragmentManager(), "register");
+            }
         });
 
 
