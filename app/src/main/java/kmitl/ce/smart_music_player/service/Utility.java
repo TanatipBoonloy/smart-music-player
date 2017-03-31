@@ -16,9 +16,12 @@ public class Utility {
                 return str.substring(0, 29) + "...";
             } else return str;
         } else if (type == 2) {//MusicPlayingFragment
-            if (str.length() > 50) {
-                return str.substring(0, 50) + "...";
-            } else return str;
+            if(str!=null){
+                if (str.length() > 30) {
+                    return str.substring(0, 30) + "...";
+                } else return str;
+            }
+            return "null";
         }
         return null;
     }

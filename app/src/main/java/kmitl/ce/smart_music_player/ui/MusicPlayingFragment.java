@@ -222,7 +222,7 @@ public class MusicPlayingFragment extends DialogFragment {
         setUpMusicPlayerView();
 
         //////////////////////////////Test///////////////////////////////
-        final String[] Playlists ={"playlist1","playlsit2"};
+        final String[] Playlists ={"Favorite"};
 
 
         final AlertDialog.Builder builder =

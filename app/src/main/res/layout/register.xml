@@ -66,7 +66,6 @@
             </android.support.v7.widget.Toolbar>
         </LinearLayout>
 
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -78,14 +77,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:weightSum="3">
             <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:gravity="center_vertical|center_horizontal|center"
                 android:textColor="@color/colorText"
                 android:textSize="12dp"
@@ -93,23 +92,42 @@
 
             <EditText
                 android:id="@+id/username"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:ems="10"
+                android:hint="Username"
                 android:textColor="@color/colorText"
-                />
+                android:maxLines="1"
+                android:inputType="textPersonName"/>
+            <!--<EditText-->
+                <!--android:id="@+id/username"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="40dp"-->
+                <!--android:layout_weight="2"-->
+                <!--android:textColor="@color/colorText"-->
+                <!--android:fitsSystemWindows  = "true"-->
+                <!--android:includeFontPadding = "false"-->
+                <!--android:maxLines="1"-->
+                <!--android:cursorVisible = "false"-->
+                <!--android:inputType="textPersonName"-->
+                <!--android:lines="1"-->
+                <!--android:digits="01"-->
+                <!--android:ems="10"-->
+                <!--/>-->
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:weightSum="3">
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:inputType="text"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal|center"
                 android:textColor="@color/colorText"
@@ -118,8 +136,13 @@
 
             <EditText
                 android:id="@+id/password"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:ems="10"
+                android:hint="Password"
+                android:maxLines="1"
                 android:layout_weight="2"
                 android:textColor="@color/colorText"
                 android:inputType="textPassword"
@@ -128,14 +151,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:weightSum="3">
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:inputType="text"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal|center"
                 android:textColor="@color/colorText"
@@ -144,8 +167,13 @@
 
             <EditText
                 android:id="@+id/re_password"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:ems="10"
+                android:hint="Confirm Password"
+                android:maxLines="1"
                 android:layout_weight="2"
                 android:textColor="@color/colorText"
                 android:inputType="textPassword"

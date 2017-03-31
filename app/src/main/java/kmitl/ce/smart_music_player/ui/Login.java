@@ -1,10 +1,13 @@
 package kmitl.ce.smart_music_player.ui;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +20,20 @@ import android.widget.Toast;
 
 import kmitl.ce.smart_music_player.R;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import java.util.Arrays;
+
+import static android.app.PendingIntent.getActivity;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class Login extends AppCompatActivity {
 
@@ -34,7 +44,7 @@ public class Login extends AppCompatActivity {
         private   Animation anim;
         private Button continueLogin;
     private Button register;
-
+    private static final String PERMISSION = "publish_actions";
 
 
     @Override
@@ -43,10 +53,6 @@ public class Login extends AppCompatActivity {
 
 
         setContentView(R.layout.login);
-
-
-
-
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -60,6 +66,10 @@ public class Login extends AppCompatActivity {
 
         callbackManager = CallbackManager.Factory.create();
 
+        if(isLoggedIn()){
+            Intent i = new Intent(getApplicationContext(), PlaylistActivity.class);
+            startActivity(i);
+        }
         // Callback registration
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -73,6 +83,8 @@ public class Login extends AppCompatActivity {
 //                                "Auth Token: "
 //                                + loginResult.getAccessToken().getToken()
 //                );
+
+
 //
                 Intent i = new Intent(getApplicationContext(), PlaylistActivity.class);
                 startActivity(i);
@@ -89,10 +101,15 @@ public class Login extends AppCompatActivity {
             public void onError(FacebookException exception) {
 
                 info.setText("Login attempt failed.");
+                String title = getString(R.string.error);
+                String alertMessage = exception.getMessage();
+                showResult(title, alertMessage);
             }
 
 
         });
+
+
 
         this.continueLogin = (Button) findViewById(R.id.local_login);
         this.continueLogin.setOnClickListener(new View.OnClickListener() {
@@ -132,6 +149,19 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    private void showResult(String title, String alertMessage) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(alertMessage)
+                .setPositiveButton("OK", null)
+                .show();
+    }
+
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
     }
 
 }

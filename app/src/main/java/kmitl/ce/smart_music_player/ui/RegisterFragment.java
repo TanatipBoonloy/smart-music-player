@@ -95,8 +95,8 @@ public class RegisterFragment extends DialogFragment {
 
 
         this.username= (EditText) rootView.findViewById(R.id.username);
-        this.password =(EditText) rootView.findViewById(R.id.password);
-        this.repassword=(EditText) rootView.findViewById(R.id.re_password);
+//        this.password =(EditText) rootView.findViewById(R.id.password);
+//        this.repassword=(EditText) rootView.findViewById(R.id.re_password);
         this.cancelBtn=(Button) rootView.findViewById(R.id.cancel_button);
         this.okBtn=(Button) rootView.findViewById(R.id.ok_button);
 

@@ -1,8 +1,10 @@
 package kmitl.ce.smart_music_player.ui;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +16,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,6 +30,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,6 +62,7 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
     private List<Integer> normalIndexList;
     private List<Integer> activeIndexList;
     private ProgressBar spinner;
+    final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
     private Integer playStateImage = null;
     ImageButton musicPlayingButton;
@@ -71,6 +78,10 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist);
+
+
+
+
         realm = Realm.getDefaultInstance();
 
 //        this.musicInformationList = new ArrayList<>();
@@ -78,13 +89,23 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
         this.readFileService = new ReadFileService();
         this.mediaPlayer = new MediaPlayer();
 
-        try {
-            DBInitialService.initialize(this.realm, this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+//        try {
+//            DBInitialService.initialize(this.realm, this);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//
         getMusicList();
+//        insertDummyContactWrapper();
+
+
+
+
+
+
+
 //        for (int i = 0; i < this.musicInformationList.size(); i++) {
 //            this.normalIndexList.add(i);
 //        }
@@ -187,39 +208,45 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
         setPlayToolBar();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 1: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    readFileService.getAllMusicFile(realm);
-
-                } else {
-
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+////        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        switch (requestCode) {
+//            case 1: {
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                    readFileService.getAllMusicFile(realm);
+//
+//                } else {
+//
+//                }
+//                return;
+//            }
+//
+//            // other 'case' lines to check for other
+//            // permissions this app might request
+//        }
+//    }
 
     public void getMusicList() {
         if (Build.VERSION.SDK_INT >= 23) {
-            if (PlaylistActivity.this.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            } else {
-                readFileService.getAllMusicFile(realm);
-            }
+//            if (PlaylistActivity.this.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+//                    != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+//            } else { readFileService.getAllMusicFile(realm);
+//            if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ){
+//
+//                requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+//                        REQUEST_CODE_ASK_PERMISSIONS);
+            checkPermissionGetAllSong();
+
         } else {
             readFileService.getAllMusicFile(realm);
         }
+
+
     }
 
     public void play() {
@@ -489,5 +516,61 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
 
         this.recycleFragment.onDestroy();
 
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if ( v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        }
+        return super.dispatchTouchEvent( event );
+    }
+
+    private void checkPermissionGetAllSong() {
+        int hasWriteContactsPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_CODE_ASK_PERMISSIONS);
+            return;
+        }else{
+            readStorage();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_PERMISSIONS:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    readStorage();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(this, "WRITE_CONTACTS Denied", Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private void readStorage(){
+        try {
+            DBInitialService.initialize(this.realm, this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        readFileService.getAllMusicFile(realm);
     }
 }

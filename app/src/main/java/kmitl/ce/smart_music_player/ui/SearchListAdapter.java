@@ -27,11 +27,11 @@ import kmitl.ce.smart_music_player.service.Utility;
 /**
  * Created by Jo on 8/16/2016.
  */
-public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.MusicViewHolder> {
+public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.MusicViewHolder> {
     private Context mContext;
     private Realm realm;
 
-    public MusicListAdapter(Context context, Realm realm) {
+    public SearchListAdapter(Context context, Realm realm) {
         this.mContext = context;
         this.realm = realm;
     }
@@ -60,7 +60,6 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
                 .get(position);
 
         holder.textView.setText(Utility.subStringTitle(realmMusic.getTitle(), 2));
-        holder.artistName.setText(Utility.subStringTitle(realmMusic.getTitle(), 2));
 //        holder.textView.setText(Utility.subStringTitle(musicInformationList.get(position).getTitle(), 2));
         //holder.likeButton.setText("Like");
 
@@ -146,20 +145,18 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
 
     @Override
     public int getItemCount() {
-        return (int) this.realm.where(RealmMusicInformation.class).count();
+        return 1;
     }
 
     public static class MusicViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public TextView textView;
-        public TextView artistName;
         //public Button likeButton;
 
         public MusicViewHolder(View view) {
             super(view);
             this.imageView = (ImageView) view.findViewById(R.id.music_image);
             this.textView = (TextView) view.findViewById(R.id.music_title);
-            this.artistName = (TextView ) view.findViewById(R.id.music_artist);
             //this.likeButton = (Button) view.findViewById(R.id.like_button);
         }
     }

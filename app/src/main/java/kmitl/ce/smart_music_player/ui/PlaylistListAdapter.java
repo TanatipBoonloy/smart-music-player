@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -38,6 +39,7 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
     private Realm realm;
     private PlaylistAllInformation obj;
     private OnItemClickListener listener;
+
 
 
     public interface OnItemClickListener {
@@ -81,7 +83,7 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
                 .get(position);
 
 
-        holder.textView.setText(Utility.subStringTitle(obj.getPlaylists()[0].toString(), 2));
+        holder.textView.setText(Utility.subStringTitle("Favorite", 2));
 
 
 //        byte[] thumbnail = musicInformationList.get(position).getThumbnail();
@@ -122,7 +124,9 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
 
     @Override
     public int getItemCount() {
-        return obj.getPlaylists().length;
+
+//        return obj.getPlaylists().length;
+        return 1;
     }
 
     public static class PlaylistViewHolder extends RecyclerView.ViewHolder {

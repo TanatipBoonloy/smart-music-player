@@ -127,7 +127,12 @@ public class ReadFileService {
         realmObj.setYear(year);
         realmObj.setGenre(genre);
         realmObj.setAlbum(album);
-        realmObj.setDuration(Integer.parseInt(duration));
+
+        try{
+            realmObj.setDuration(Integer.parseInt(duration));
+        }catch (Exception ex){
+            System.out.println("Read file service error "+ex.toString());
+        }
         realmObj.setPath(file.getPath());
         realmObj.setFileName(file.getName());
         realm.commitTransaction();

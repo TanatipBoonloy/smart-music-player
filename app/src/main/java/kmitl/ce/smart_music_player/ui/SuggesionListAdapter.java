@@ -55,6 +55,7 @@ public class SuggesionListAdapter extends RecyclerView.Adapter<SuggesionListAdap
                 .findAll()
                 .get(position);
 
+
         holder.textView.setText(Utility.subStringTitle(setTextModified(realmMusic.getTitle()), 2));
 //        holder.textView.setText(Utility.subStringTitle(musicInformationList.get(position).getTitle(), 2));
         //holder.likeButton.setText("Like");
@@ -72,7 +73,6 @@ public class SuggesionListAdapter extends RecyclerView.Adapter<SuggesionListAdap
 //            holder.likeButton.setBackgroundColor(Color.parseColor("#F78181"));
 //        }
 
-//        byte[] thumbnail = musicInformationList.get(position).getThumbnail();
         byte[] thumbnail = realmMusic.getThumnail();
         if (thumbnail != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
@@ -82,12 +82,6 @@ public class SuggesionListAdapter extends RecyclerView.Adapter<SuggesionListAdap
         } else {
             Picasso.with(mContext).load(R.drawable.musical_note).into(holder.imageView);
         }
-//        Picasso.with(mContext).load(bitmap)
-//                .error(R.drawable.musical_note)
-//                .placeholder(R.drawable.musical_note)
-//                .into(holder.imageView);
-//        Picasso.with(mContext).load(R.drawable.musical_note).into(holder.imageView);
-//        holder.imageView.setImageDrawable(null);
 
         holder.textView.setTag(holder);
         holder.imageView.setTag(holder);

@@ -4,4 +4,5 @@
     <string name="fb_login_protocol_scheme">fb196723204147975</string>
     <string name="search">Search</string>
     <string name="login">Log in</string>
+    <string name="error">Error</string>
 </resources>
