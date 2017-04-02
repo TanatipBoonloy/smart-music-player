@@ -69,6 +69,8 @@ public class DBInitialService {
     }
 
     public static List<RealmPlaylistInformation> initializePlaylist(final Realm realm, Context context) throws Exception {
+
+        System.out.println("result5555");
         RealmQuery<RealmPlaylistInformation> query = realm.where(RealmPlaylistInformation.class);
         RealmResults<RealmPlaylistInformation> result = query.findAll();
 
@@ -80,22 +82,22 @@ public class DBInitialService {
            final PlaylistAllInformation playlistAllInformation = gson.fromJson(GetJsonPlaylists, PlaylistAllInformation.class);
 
             if(playlistAllInformation!=null){
-
+                System.out.println("playlistallinformation 555555555  "+ GetJsonPlaylists);
 
                 realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm r) {
-                        int index = 1;
-                        for (String str: playlistAllInformation.getPlaylists()){
-                            String GetJsonPlaylist = appSharedPrefs.getString(str, "");
-                            PlaylistInformation obj = gson.fromJson(GetJsonPlaylist,PlaylistInformation.class);
+                        @Override
+                        public void execute(Realm r) {
+                            int index = 1;
+                            for (String str: playlistAllInformation.getPlaylists()){
+                                String GetJsonPlaylist = appSharedPrefs.getString(str, "");
+                                PlaylistInformation obj = gson.fromJson(GetJsonPlaylist,PlaylistInformation.class);
 
-                            RealmPlaylistInformation rmif = r.createObject(RealmPlaylistInformation.class, index);
-                            rmif.setPlaylistName(str);
+                                RealmPlaylistInformation rmif = r.createObject(RealmPlaylistInformation.class, index);
+                                rmif.setPlaylistName(str);
 //                            rmif.setSongs(obj.getSongs());
-                            index++;
+                                index++;
+                            }
                         }
-                    }
                 });
 
                 result = query.findAll();
@@ -103,5 +105,7 @@ public class DBInitialService {
 
         }
         return result;
+//        return null;
     }
+
 }

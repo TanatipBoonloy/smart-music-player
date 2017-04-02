@@ -78,12 +78,13 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
         holder.imageView.setMaxWidth((screenWidth) * 20 / 100);
         //holder.likeButton.setWidth(screenWidth * 20 / 100);
 
-        RealmMusicInformation realmPlaylist = realm.where(RealmMusicInformation.class)
-                .findAll()
-                .get(position);
+//        RealmMusicInformation realmPlaylist = realm.where(RealmMusicInformation.class)
+//                .findAll()
+//                .get(position);
+        RealmPlaylistInformation realmPlaylist = realm.where(RealmPlaylistInformation.class) .findAll().get(position);
 
 
-        holder.textView.setText(Utility.subStringTitle("Favorite", 2));
+        holder.textView.setText(Utility.subStringTitle(realmPlaylist.getPlaylistName(), 2));
 
 
 //        byte[] thumbnail = musicInformationList.get(position).getThumbnail();
@@ -110,6 +111,19 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
 //
 ////                Toast.makeText(mContext,musicInformationList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
 //                ((PlaylistActivity) mContext).playSong(position);
+
+
+
+//                PlaylistMusicCustomListAdapter.MusicViewHolder musicViewHolder = (PlaylistMusicCustomListAdapter.MusicViewHolder) v.getTag();
+//
+//                int position = musicViewHolder.getAdapterPosition();
+//
+//                RealmPlaylistInformation obj= realm.where(RealmPlaylistInformation.class)
+//                        .findAll()
+//                        .get(position);
+
+//                CustomPlaylistFragment df= new CustomPlaylistFragment().newInstance(obj);
+//                df.show(getFragment(), "musicPlayingDialog");
                 listener.onItemClicked(v);
             }
         };
@@ -126,7 +140,7 @@ public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapte
     public int getItemCount() {
 
 //        return obj.getPlaylists().length;
-        return 1;
+        return realm.where(RealmPlaylistInformation.class).findAll().size();
     }
 
     public static class PlaylistViewHolder extends RecyclerView.ViewHolder {

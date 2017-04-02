@@ -243,7 +243,8 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
             checkPermissionGetAllSong();
 
         } else {
-            readFileService.getAllMusicFile(realm);
+//            readFileService.getAllMusicFile(realm);
+            readStorage();
         }
 
 
@@ -501,7 +502,7 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
 //        transaction.addToBackStack(null);
         transaction.commit();
 
-        this.playlsitFragment.onDestroy();
+//        this.playlsitFragment.onDestroy();
     }
 
     private void playlistButton(SegmentedGroup group) {
@@ -514,26 +515,26 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
 //        transaction.addToBackStack(null);
         transaction.commit();
 
-        this.recycleFragment.onDestroy();
+//        this.recycleFragment.onDestroy();
 
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            View v = getCurrentFocus();
-            if ( v instanceof EditText) {
-                Rect outRect = new Rect();
-                v.getGlobalVisibleRect(outRect);
-                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
-                    v.clearFocus();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
-            }
-        }
-        return super.dispatchTouchEvent( event );
-    }
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent event) {
+//        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//            View v = getCurrentFocus();
+//            if ( v instanceof EditText) {
+//                Rect outRect = new Rect();
+//                v.getGlobalVisibleRect(outRect);
+//                if (!outRect.contains((int)event.getRawX(), (int)event.getRawY())) {
+//                    v.clearFocus();
+//                    InputMethodManager imm = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+//                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//                }
+//            }
+//        }
+//        return super.dispatchTouchEvent( event );
+//    }
 
     private void checkPermissionGetAllSong() {
         int hasWriteContactsPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -555,7 +556,7 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
                     readStorage();
                 } else {
                     // Permission Denied
-                    Toast.makeText(this, "WRITE_CONTACTS Denied", Toast.LENGTH_SHORT)
+                    Toast.makeText(this, "Read external Storage Denied", Toast.LENGTH_SHORT)
                             .show();
                 }
                 break;
@@ -565,12 +566,19 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
     }
 
     private void readStorage(){
+        System.out.println("hiiiiiiiiii555555okkkk");
         try {
             DBInitialService.initialize(this.realm, this);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        try{
+
+            DBInitialService.initializePlaylist(this.realm,this);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         readFileService.getAllMusicFile(realm);
     }
 }

@@ -3,12 +3,14 @@ package kmitl.ce.smart_music_player.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -25,11 +27,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import kmitl.ce.smart_music_player.R;
 import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
+import kmitl.ce.smart_music_player.entity.RealmPlaylistInformation;
 import kmitl.ce.smart_music_player.model.MusicInformation;
+import kmitl.ce.smart_music_player.model.PlaylistAllInformation;
+import kmitl.ce.smart_music_player.model.PlaylistInformation;
 import kmitl.ce.smart_music_player.service.Utility;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -222,31 +228,81 @@ public class MusicPlayingFragment extends DialogFragment {
         setUpMusicPlayerView();
 
         //////////////////////////////Test///////////////////////////////
-        final String[] Playlists ={"Favorite"};
+
+        final SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
+        final Gson gson = new Gson();
+
+        String GetJson = appSharedPrefs.getString("Playlists", "");
+        PlaylistAllInformation playlistAllInformation = gson.fromJson(GetJson, PlaylistAllInformation.class);
+
+        final String[] Playlists;
+        if(playlistAllInformation.getPlaylists()!=null){
+             Playlists =playlistAllInformation.getPlaylists() ;
+        }else Playlists= null;
 
 
-        final AlertDialog.Builder builder =
-                new AlertDialog.Builder(this.getActivity());
-        builder.setTitle("Add To Playlist");
-        builder.setSingleChoiceItems(Playlists, 0, new DialogInterface.OnClickListener() {
-            String mSelected="";
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mSelected = Playlists[which];
-            }
-        });
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
 
-            String mSelected="";
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // ส่วนนี้สำหรับเซฟค่าลง database หรือ SharedPreferences.
-                Toast.makeText(getApplicationContext(), "ok click", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-        });
+        final String[] mSelected = {""};
 
-        builder.setNegativeButton("Cancel", null);
+
+        if(Playlists!=null) {
+            builder.setTitle("Add To Playlist");
+            builder.setSingleChoiceItems(Playlists, 0, new DialogInterface.OnClickListener() {
+                //            String mSelected="";
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mSelected[0] = Playlists[which];
+                }
+            });
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // ส่วนนี้สำหรับเซฟค่าลง database หรือ SharedPreferences.
+
+                    String GetJson = appSharedPrefs.getString(mSelected[0], "");
+                    PlaylistInformation playlistInformation = gson.fromJson(GetJson, PlaylistInformation.class);
+                    RealmMusicInformation realmMusicInformation = ((PlaylistActivity) getActivity()).getRealmMusicInformation();
+
+                    if (playlistInformation!=null && playlistInformation.getSongs()!=null){
+                        String[] oldArray = playlistInformation.getSongs();
+                        String[] array=new String[oldArray.length+1];
+                        for (int i=0;i<oldArray.length;i++){
+                            array[i]=oldArray[i];
+                        }
+                        array[array.length-1]= String.valueOf(realmMusicInformation.getId());
+                        playlistInformation.setSongs(array);
+                    }else {
+                        playlistInformation=new PlaylistInformation();
+                        String[] array = new String[1];
+                        array[0]=String.valueOf(realmMusicInformation.getId());
+                        playlistInformation.setSongs(array);
+
+                    }
+
+                    playlistInformation.setPlaylistName(mSelected[0]);
+                    String PutJsonPlaylist = gson.toJson(playlistInformation);
+                    prefsEditor.putString(playlistInformation.getPlaylistName(), PutJsonPlaylist);
+                    prefsEditor.commit();
+
+                    Toast.makeText(getApplicationContext(), PutJsonPlaylist , Toast.LENGTH_SHORT).show();
+
+//                    String test = appSharedPrefs.getString(playlistInformation.getPlaylistName(), "");
+//                    PlaylistInformation test2 = gson.fromJson(GetJson, PlaylistInformation.class);
+////
+//                    System.out.println("showwwwwwwwwwwwIIIIIII"+test);
+                    dialog.dismiss();
+                }
+            });
+
+            builder.setNegativeButton("Cancel", null);
+        }else{
+            builder.setTitle("Don't have playlist to add");
+            builder.setPositiveButton("OK", null);
+            builder.setNegativeButton("Cancel", null);
+        }
         builder.create();
 
         ImageView addToPlaylist = (ImageView) rootView.findViewById(R.id.addToPlaylist);
@@ -334,6 +390,12 @@ public class MusicPlayingFragment extends DialogFragment {
         int sec = (millisec / 1000) % 60;
         return String.format("%02d:%02d", min, sec);
     }
+
+//    public RealmPlaylistInformation getRealmPlaylistInformation() {
+//        return (this.currentSongPlaying != null) ? realm.where(RealmMusicInformation.class)
+//                .findAll()
+//                .get(this.currentSongPlaying) : null;
+//    }
 
 
 }

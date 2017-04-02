@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import kmitl.ce.smart_music_player.R;
 import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
@@ -30,10 +31,12 @@ import kmitl.ce.smart_music_player.service.Utility;
 public class PlaylistMusicCustomListAdapter extends RecyclerView.Adapter<PlaylistMusicCustomListAdapter.MusicViewHolder> {
     private Context mContext;
     private Realm realm;
+    private RealmList<RealmMusicInformation> _contents;
 
-    public PlaylistMusicCustomListAdapter(Context context, Realm realm) {
+    public PlaylistMusicCustomListAdapter(Context context, Realm realm,RealmList<RealmMusicInformation> contents) {
         this.mContext = context;
         this.realm = realm;
+        this._contents = contents;
     }
 
     @Override
@@ -55,9 +58,7 @@ public class PlaylistMusicCustomListAdapter extends RecyclerView.Adapter<Playlis
         holder.imageView.setMaxWidth((screenWidth) * 20 / 100);
         //holder.likeButton.setWidth(screenWidth * 20 / 100);
 
-        RealmMusicInformation realmMusic = realm.where(RealmMusicInformation.class)
-                .findAll()
-                .get(position);
+        RealmMusicInformation realmMusic = _contents.get(position);
 
         holder.textView.setText(Utility.subStringTitle(realmMusic.getTitle(), 2));
 //        holder.textView.setText(Utility.subStringTitle(musicInformationList.get(position).getTitle(), 2));
@@ -105,7 +106,8 @@ public class PlaylistMusicCustomListAdapter extends RecyclerView.Adapter<Playlis
                 int position = musicViewHolder.getAdapterPosition();
 
 //                Toast.makeText(mContext,musicInformationList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
-                ((PlaylistActivity) mContext).playSong(position);
+                ((PlaylistActivity) mContext).playSong(_contents.get(position).getId()-1);
+                System.out.println(" id play :"+_contents.get(position).getId());
             }
         };
 
@@ -145,7 +147,7 @@ public class PlaylistMusicCustomListAdapter extends RecyclerView.Adapter<Playlis
 
     @Override
     public int getItemCount() {
-        return 3;
+        return _contents.size();
     }
 
     public static class MusicViewHolder extends RecyclerView.ViewHolder {

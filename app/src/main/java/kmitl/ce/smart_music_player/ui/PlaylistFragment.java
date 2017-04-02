@@ -16,8 +16,15 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.util.List;
+
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import kmitl.ce.smart_music_player.R;
+import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
+import kmitl.ce.smart_music_player.entity.RealmPlaylistInformation;
 import kmitl.ce.smart_music_player.model.PlaylistAllInformation;
 import kmitl.ce.smart_music_player.model.PlaylistInformation;
 import kmitl.ce.smart_music_player.service.DBInitialService;
@@ -35,10 +42,42 @@ public class PlaylistFragment extends Fragment implements PlaylistListAdapter.On
     private int playlistMax=15;
     private PlaylistListAdapter.OnItemClickListener listener;
 
+//    public interface FragmentCommunication {
+//        void respond(int position,String name,String job);
+//    }
+
 
     @Override
     public void onItemClicked(View v) {
-        CustomPlaylistFragment df= new CustomPlaylistFragment();
+
+        PlaylistListAdapter.PlaylistViewHolder playlistViewHolder = (PlaylistListAdapter.PlaylistViewHolder) v.getTag();
+
+        int position = playlistViewHolder.getAdapterPosition();
+
+        RealmPlaylistInformation realmPlaylistInformation= realm.where(RealmPlaylistInformation.class)
+                .findAll()
+                .get(position);
+
+        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        Gson gson = new Gson();
+        String json = appSharedPrefs.getString(realmPlaylistInformation.getPlaylistName(), "");
+        PlaylistInformation obj = gson.fromJson(json, PlaylistInformation.class);
+        RealmList<RealmMusicInformation> listMusicInformation = new RealmList<RealmMusicInformation>();
+
+        if(obj!=null){
+            for (int i=0; i<obj.getSongs().length;i++){
+                listMusicInformation.add(i,realm.where(RealmMusicInformation.class).equalTo("id",Integer.parseInt(obj.getSongs()[i])).findFirst());
+//                System.out.println("000000000000   "+ i +"   "+ realm.where(RealmMusicInformation.class).equalTo("id",Integer.parseInt(obj.getSongs()[i])).findFirst().getName());
+            }
+//            System.out.println("List Realm musicccccccc :" + listMusicInformation.size());
+        }else{
+//            System.out.println("List Realm musicccccccc : nulll  ");
+        }
+
+
+//        System.out.println("000000000000   "+ realm.where(RealmMusicInformation.class).equalTo("id",Integer.parseInt(obj.getSongs()[0])).findFirst().getName());
+
+        CustomPlaylistFragment df= new CustomPlaylistFragment().newInstance(realmPlaylistInformation,listMusicInformation);
         df.show(getFragmentManager(), "musicPlayingDialog");
     }
 
@@ -46,11 +85,11 @@ public class PlaylistFragment extends Fragment implements PlaylistListAdapter.On
         final View rootView = inflater.inflate(R.layout.playlist_fragment, container, false);
         this.realm = Realm.getDefaultInstance();
 
-        try {
-            DBInitialService.initialize(this.realm, getContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            DBInitialService.initialize(this.realm, getContext());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         this.mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
@@ -110,10 +149,10 @@ public class PlaylistFragment extends Fragment implements PlaylistListAdapter.On
         return rootView;
     }
 
-    private void savePlaylist(String str){
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+    private void savePlaylist(final String str){
+        final SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
-        Gson gson = new Gson();
+        final Gson gson = new Gson();
 
         String GetJson = appSharedPrefs.getString("Playlists", "");
         PlaylistAllInformation playlistAllInformation = gson.fromJson(GetJson, PlaylistAllInformation.class);
@@ -141,9 +180,28 @@ public class PlaylistFragment extends Fragment implements PlaylistListAdapter.On
         prefsEditor.putString(str, PutJsonPlaylistInformation);
         prefsEditor.commit();
 
-        System.out.println("Playlistsssss  "+PutJsonAllPlaylist);
-        System.out.println("Playlist Information  "+ PutJsonPlaylistInformation);
+//        System.out.println("Playlistsssss  "+PutJsonAllPlaylist);
+//        System.out.println("Playlist Information  "+ PutJsonPlaylistInformation);
+
+        final RealmQuery<RealmPlaylistInformation> query = realm.where(RealmPlaylistInformation.class);
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm r) {
+
+                RealmPlaylistInformation rmif = r.createObject(RealmPlaylistInformation.class, query.findAll().size());
+                rmif.setPlaylistName(str);
+//                            rmif.setSongs(obj.getSongs());
+//                System.out.println("Realm Build Playlist Information  ");
+            }
+        });
+
     }
+
+//    public RealmPlaylistInformation getPlaylistInformation(){
+//
+//        return null;
+//    }
 
 
 }

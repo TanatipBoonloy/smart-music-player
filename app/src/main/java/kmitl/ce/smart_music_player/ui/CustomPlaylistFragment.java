@@ -27,8 +27,10 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import kmitl.ce.smart_music_player.R;
 import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
+import kmitl.ce.smart_music_player.entity.RealmPlaylistInformation;
 import kmitl.ce.smart_music_player.service.Utility;
 
 /**
@@ -37,6 +39,8 @@ import kmitl.ce.smart_music_player.service.Utility;
 
 public class CustomPlaylistFragment extends DialogFragment {
 
+    private static RealmPlaylistInformation playlistInformation;
+    private static RealmList<RealmMusicInformation> musicList;
     private Button suffleButton;
     private ImageView imageView;
     private TextView playlistName;
@@ -45,9 +49,12 @@ public class CustomPlaylistFragment extends DialogFragment {
     private Realm realm;
 
 
-    public static CustomPlaylistFragment newInstance() {
+
+    public static CustomPlaylistFragment newInstance(RealmPlaylistInformation obj, RealmList<RealmMusicInformation> musiclist) {
         CustomPlaylistFragment fragment = new CustomPlaylistFragment();
         fragment.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme );
+        playlistInformation=obj;
+        musicList=musiclist;
         return fragment;
     }
 
@@ -106,11 +113,11 @@ public class CustomPlaylistFragment extends DialogFragment {
         this.mRecyclerView.setDrawingCacheEnabled(true);
         this.mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
-        this.mAdapter = new PlaylistMusicCustomListAdapter(this.getActivity() , this.realm);
+        this.mAdapter = new PlaylistMusicCustomListAdapter(this.getActivity() , this.realm,this.musicList);
 
         this.mRecyclerView.setAdapter(this.mAdapter);
 
-        this.playlistName.setText("Favorite");
+        this.playlistName.setText(playlistInformation.getPlaylistName());
 
         setUpPlaylistCustomView();
 
@@ -121,12 +128,13 @@ public class CustomPlaylistFragment extends DialogFragment {
     private void setImageView() {
         //ImageView
 //        byte[] thumbnail = ((PlaylistActivity) getActivity()).getRealmMusicInformation().getThumnail();
-//        if (thumbnail != null) {
-//            Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
-//            imageView.setImageBitmap(bitmap);
-//        } else {
+        byte[] thumbnail = playlistInformation.getThumnail();
+        if (thumbnail != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
+            imageView.setImageBitmap(bitmap);
+        } else {
             Picasso.with(getActivity()).load(R.drawable.view_image).into(imageView);
-//        }
+        }
     }
 
 
