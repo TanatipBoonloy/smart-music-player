@@ -237,17 +237,19 @@ public class MusicPlayingFragment extends DialogFragment {
         PlaylistAllInformation playlistAllInformation = gson.fromJson(GetJson, PlaylistAllInformation.class);
 
         final String[] Playlists;
-        if(playlistAllInformation.getPlaylists()!=null){
-             Playlists =playlistAllInformation.getPlaylists() ;
-        }else Playlists= new String[]{""};
+        if(playlistAllInformation==null || playlistAllInformation.getPlaylists()==null ){
+            Playlists= null;
+//            System.out.println("nullllllllllllll   :"+GetJson);
+        }else  {
 
+            Playlists =playlistAllInformation.getPlaylists() ;
+        }
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
 
-        final String[] mSelected = new String[]{Playlists[0]};
-
 
         if(Playlists!=null) {
+            final String[] mSelected = new String[]{Playlists[0]};
             builder.setTitle("Add To Playlist");
             builder.setSingleChoiceItems(Playlists, 0, new DialogInterface.OnClickListener() {
                 //            String mSelected="";
@@ -290,10 +292,6 @@ public class MusicPlayingFragment extends DialogFragment {
 
                     Toast.makeText(getApplicationContext(), PutJsonPlaylist , Toast.LENGTH_SHORT).show();
 
-//                    String test = appSharedPrefs.getString(playlistInformation.getPlaylistName(), "");
-//                    PlaylistInformation test2 = gson.fromJson(GetJson, PlaylistInformation.class);
-////
-//                    System.out.println("showwwwwwwwwwwwIIIIIII"+test);
                     dialog.dismiss();
                 }
             });

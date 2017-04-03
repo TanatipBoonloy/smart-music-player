@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -96,6 +97,8 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
 
         holder.textView.setTag(holder);
         holder.imageView.setTag(holder);
+        holder.artistName.setTag(holder);
+        holder.all.setTag(holder);
         //holder.likeButton.setTag(holder);
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -139,6 +142,8 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
 
         holder.textView.setOnClickListener(onClickListener);
         holder.imageView.setOnClickListener(onClickListener);
+        holder.artistName.setOnClickListener(onClickListener);
+        holder.all.setOnClickListener(onClickListener);
         //holder.likeButton.setOnClickListener(onLikeBtn);
 
 
@@ -153,6 +158,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
         public ImageView imageView;
         public TextView textView;
         public TextView artistName;
+        public RelativeLayout all;
         //public Button likeButton;
 
         public MusicViewHolder(View view) {
@@ -160,6 +166,7 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
             this.imageView = (ImageView) view.findViewById(R.id.music_image);
             this.textView = (TextView) view.findViewById(R.id.music_title);
             this.artistName = (TextView ) view.findViewById(R.id.music_artist);
+            this.all = (RelativeLayout) view.findViewById(R.id.all);
             //this.likeButton = (Button) view.findViewById(R.id.like_button);
         }
     }

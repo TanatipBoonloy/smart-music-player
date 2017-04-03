@@ -13,13 +13,15 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorLine"/>
+        android:background="@color/blue_button"/>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/colorCardBG"
-        android:weightSum="5">
+        android:weightSum="5"
+        android:id="@+id/all">
 
         <ImageView
             android:id="@+id/music_image"
