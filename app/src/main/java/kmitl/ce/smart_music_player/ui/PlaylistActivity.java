@@ -1,25 +1,23 @@
 package kmitl.ce.smart_music_player.ui;
 
 import android.Manifest;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,9 +26,17 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +51,7 @@ import kmitl.ce.smart_music_player.service.DBInitialService;
 import kmitl.ce.smart_music_player.service.ReadFileService;
 import kmitl.ce.smart_music_player.service.Utility;
 
-public class PlaylistActivity extends AppCompatActivity implements  View.OnClickListener {
+public class PlaylistActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -73,13 +79,15 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
     private RecycleMusicFragment recycleFragment;
     private RecycleSuggesionFragment recycleSuggesion;
     private SearchFragment searchFragment;
+    private CallbackManager callbackManager;
+    private AccessToken accessToken;
+    private String TYPE_ACTIVITY = "TYPE_ACTIVITY";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist);
-
-
 
 
         realm = Realm.getDefaultInstance();
@@ -89,21 +97,16 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
         this.readFileService = new ReadFileService();
         this.mediaPlayer = new MediaPlayer();
 
-//        try {
-//            DBInitialService.initialize(this.realm, this);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try {
+            DBInitialService.initialize(this.realm, this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 //
 //
 //
         getMusicList();
 //        insertDummyContactWrapper();
-
-
-
-
-
 
 
 //        for (int i = 0; i < this.musicInformationList.size(); i++) {
@@ -119,18 +122,16 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
         musicPlayingButton.setMaxWidth((new DisplayMetrics().widthPixels) * 30 / 100);
 
 
-
-
         this.playlsitFragment = new PlaylistFragment();
         this.recycleFragment = new RecycleMusicFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         //set visible suggesion fragment
-        if(true){
+        if (true) {
             this.recycleSuggesion = new RecycleSuggesionFragment();
             transaction.replace(R.id.contentFragmentSuggesion, recycleSuggesion);
 
-        }else{
+        } else {
             FrameLayout suggesion = (FrameLayout) findViewById(R.id.contentFragmentSuggesion);
             suggesion.setVisibility(View.INVISIBLE);
         }
@@ -151,18 +152,90 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
 
 
         //Test--------------------------------------
-        ImageView search = (ImageView) findViewById(R.id.search_icon);
-        this.searchFragment = new SearchFragment();
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+//        ImageView search = (ImageView) findViewById(R.id.search_icon);
+//        this.searchFragment = new SearchFragment();
+//        search.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                SearchFragment df= new SearchFragment();
+//                df.show(getSupportFragmentManager(), "musicPlayingDialog");
+//            }
+//        });
 
-                SearchFragment df= new SearchFragment();
-                df.show(getSupportFragmentManager(), "musicPlayingDialog");
+
+//        FacebookSdk.sdkInitialize(getApplicationContext());
+//        AppEventsLogger.activateApp(this);
+//
+//        callbackManager = CallbackManager.Factory.create();
+
+        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
+        Gson gson = new Gson();
+        final String type= appSharedPrefs.getString(TYPE_ACTIVITY,"");
+
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        String[] list = new String[]{"Search", "Log out"};
+//        String[] list2 = new String[]{"Search", "Log in with facebook"};
+//        final String[] list = {"Search","Log out"};
+        final int activeList = AccessToken.getCurrentAccessToken() != null ? 1 : 2;
+
+        final int[] mSelected = {0};
+
+        builder.setTitle("Select");
+        builder.setSingleChoiceItems(list , 0, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mSelected[0] = which;
+                    }
+                });
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // ส่วนนี้สำหรับเซฟค่าลง database หรือ SharedPreferences.
+                dialog.dismiss();
+                if (mSelected[0] == 0) {
+                    searchFragment = new SearchFragment();
+                    SearchFragment df = new SearchFragment();
+                    df.show(getSupportFragmentManager(), "musicPlayingDialog");
+                } else {
+
+                    if(activeList==1){
+                        LoginManager.getInstance().logOut();
+                    }else {
+                        prefsEditor.putString(TYPE_ACTIVITY,"");
+                        prefsEditor.commit();
+                    }
+
+                    Intent i = new Intent(getApplicationContext(), Login.class);
+                    startActivity(i);
+                    finish();
+                }
+//                    } else {
+//                        prefsEditor.putString(TYPE_ACTIVITY,"FB_LOCAL");
+//                        prefsEditor.commit();
+//
+//                        Intent i = new Intent(getApplicationContext(), Login.class);
+//                        startActivity(i);
+//                        finish();
+//
+//                    }
+//                }
             }
         });
+        builder.setNegativeButton("Cancel", null);
+        builder.create();
 
-
+        ImageView etc = (ImageView) findViewById(R.id.etc);
+        etc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                builder.show();
+            }
+        });
 
 
         this.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -495,7 +568,7 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
     private void songsButton(SegmentedGroup group) {
 
         Toast.makeText(this, "library click", Toast.LENGTH_SHORT).show();
-        this.recycleFragment= new RecycleMusicFragment();
+        this.recycleFragment = new RecycleMusicFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.remove(this.playlsitFragment);
         transaction.replace(R.id.contentFragment, this.recycleFragment);
@@ -507,7 +580,7 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
 
     private void playlistButton(SegmentedGroup group) {
         Toast.makeText(this, "playlist  click", Toast.LENGTH_SHORT).show();
-        this.playlsitFragment= new PlaylistFragment();
+        this.playlsitFragment = new PlaylistFragment();
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.remove(this.recycleFragment);
@@ -539,10 +612,10 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
     private void checkPermissionGetAllSong() {
         int hasWriteContactsPermission = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
         if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     REQUEST_CODE_ASK_PERMISSIONS);
             return;
-        }else{
+        } else {
             readStorage();
         }
     }
@@ -565,20 +638,27 @@ public class PlaylistActivity extends AppCompatActivity implements  View.OnClick
         }
     }
 
-    private void readStorage(){
-        System.out.println("hiiiiiiiiii555555okkkk");
+    private void readStorage() {
         try {
             DBInitialService.initialize(this.realm, this);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        try{
+        try {
 
-            DBInitialService.initializePlaylist(this.realm,this);
-        }catch (Exception e){
+            DBInitialService.initializePlaylist(this.realm, this);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         readFileService.getAllMusicFile(realm);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data != null) {
+            super.onActivityResult(requestCode, resultCode, data);
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

@@ -38,20 +38,20 @@
             android:layout_weight="0.5"
             android:text="Continue"
             android:textColor="@color/com_facebook_button_text_color"
-            android:background="@color/blue_button"
+            android:background="@color/com_facebook_button_login_background_color"
             android:textSize="12sp"
             android:layout_marginTop="10dp"/>
 
-        <Button
-            android:id="@+id/register"
-            android:layout_width="185dp"
-            android:layout_height="12dp"
-            android:layout_weight="0.5"
-            android:text="Register"
-            android:textColor="@color/com_facebook_button_text_color"
-            android:background="@color/blue_button"
-            android:textSize="12sp"
-            android:layout_marginTop="10dp"/>
+        <!--<Button-->
+            <!--android:id="@+id/register"-->
+            <!--android:layout_width="185dp"-->
+            <!--android:layout_height="12dp"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:text="Register"-->
+            <!--android:textColor="@color/com_facebook_button_text_color"-->
+            <!--android:background="@color/blue_button"-->
+            <!--android:textSize="12sp"-->
+            <!--android:layout_marginTop="10dp"/>-->
 
 
     </LinearLayout>

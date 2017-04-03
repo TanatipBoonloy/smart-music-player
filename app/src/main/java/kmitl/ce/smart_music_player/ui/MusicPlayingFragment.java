@@ -239,12 +239,12 @@ public class MusicPlayingFragment extends DialogFragment {
         final String[] Playlists;
         if(playlistAllInformation.getPlaylists()!=null){
              Playlists =playlistAllInformation.getPlaylists() ;
-        }else Playlists= null;
+        }else Playlists= new String[]{""};
 
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
 
-        final String[] mSelected = {""};
+        final String[] mSelected = new String[]{Playlists[0]};
 
 
         if(Playlists!=null) {
@@ -275,6 +275,7 @@ public class MusicPlayingFragment extends DialogFragment {
                         array[array.length-1]= String.valueOf(realmMusicInformation.getId());
                         playlistInformation.setSongs(array);
                     }else {
+
                         playlistInformation=new PlaylistInformation();
                         String[] array = new String[1];
                         array[0]=String.valueOf(realmMusicInformation.getId());
@@ -305,8 +306,8 @@ public class MusicPlayingFragment extends DialogFragment {
         }
         builder.create();
 
-        ImageView addToPlaylist = (ImageView) rootView.findViewById(R.id.addToPlaylist);
-        addToPlaylist.setOnClickListener(new View.OnClickListener(){
+        ImageView etc = (ImageView) rootView.findViewById(R.id.addToPlaylist);
+        etc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 builder.show();

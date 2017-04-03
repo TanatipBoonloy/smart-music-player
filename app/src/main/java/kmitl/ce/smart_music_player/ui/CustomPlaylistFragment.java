@@ -106,18 +106,21 @@ public class CustomPlaylistFragment extends DialogFragment {
         this.imageView= (ImageView) rootView.findViewById(R.id.imageView);
         this.playlistName=(TextView) rootView.findViewById(R.id.playlist_name);
 
-        this.mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-        this.mRecyclerView.setHasFixedSize(true);
-        this.mRecyclerView.setItemViewCacheSize(100);
-        this.mRecyclerView.setDrawingCacheEnabled(true);
-        this.mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        if(musicList!=null){
+            this.mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+            this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+            this.mRecyclerView.setHasFixedSize(true);
+            this.mRecyclerView.setItemViewCacheSize(100);
+            this.mRecyclerView.setDrawingCacheEnabled(true);
+            this.mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
-        this.mAdapter = new PlaylistMusicCustomListAdapter(this.getActivity() , this.realm,this.musicList);
+            this.mAdapter = new PlaylistMusicCustomListAdapter(this.getActivity() , this.realm,this.musicList);
 
-        this.mRecyclerView.setAdapter(this.mAdapter);
+            this.mRecyclerView.setAdapter(this.mAdapter);
 
-        this.playlistName.setText(playlistInformation.getPlaylistName());
+            this.playlistName.setText(playlistInformation.getPlaylistName());
+        }
+
 
         setUpPlaylistCustomView();
 

@@ -42,9 +42,6 @@ public class PlaylistFragment extends Fragment implements PlaylistListAdapter.On
     private int playlistMax=15;
     private PlaylistListAdapter.OnItemClickListener listener;
 
-//    public interface FragmentCommunication {
-//        void respond(int position,String name,String job);
-//    }
 
 
     @Override
@@ -64,20 +61,17 @@ public class PlaylistFragment extends Fragment implements PlaylistListAdapter.On
         PlaylistInformation obj = gson.fromJson(json, PlaylistInformation.class);
         RealmList<RealmMusicInformation> listMusicInformation = new RealmList<RealmMusicInformation>();
 
-        if(obj!=null){
+        if(obj!=null & obj.getSongs()!=null){
             for (int i=0; i<obj.getSongs().length;i++){
-                listMusicInformation.add(i,realm.where(RealmMusicInformation.class).equalTo("id",Integer.parseInt(obj.getSongs()[i])).findFirst());
-//                System.out.println("000000000000   "+ i +"   "+ realm.where(RealmMusicInformation.class).equalTo("id",Integer.parseInt(obj.getSongs()[i])).findFirst().getName());
+                listMusicInformation.add(i,realm.where(RealmMusicInformation.class)
+                        .equalTo("id",Integer.parseInt(obj.getSongs()[i])).findFirst());
             }
-//            System.out.println("List Realm musicccccccc :" + listMusicInformation.size());
         }else{
-//            System.out.println("List Realm musicccccccc : nulll  ");
+
         }
 
-
-//        System.out.println("000000000000   "+ realm.where(RealmMusicInformation.class).equalTo("id",Integer.parseInt(obj.getSongs()[0])).findFirst().getName());
-
-        CustomPlaylistFragment df= new CustomPlaylistFragment().newInstance(realmPlaylistInformation,listMusicInformation);
+        CustomPlaylistFragment df= new CustomPlaylistFragment()
+                .newInstance(realmPlaylistInformation,listMusicInformation);
         df.show(getFragmentManager(), "musicPlayingDialog");
     }
 
@@ -116,14 +110,7 @@ public class PlaylistFragment extends Fragment implements PlaylistListAdapter.On
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences appSharedPrefs = PreferenceManager
-                        .getDefaultSharedPreferences(getContext());
-                Gson gson = new Gson();
-                String json = appSharedPrefs.getString("Playlists", "");
-                PlaylistAllInformation obj = gson.fromJson(json, PlaylistAllInformation.class);
-                for (int i=0;i<obj.getPlaylists().length;i++){
-                    System.out.println("objjjjjjjjj   "+obj.getPlaylists()[i]);
-                }
+
                 dialog.dismiss();
             }
         });
@@ -197,11 +184,6 @@ public class PlaylistFragment extends Fragment implements PlaylistListAdapter.On
         });
 
     }
-
-//    public RealmPlaylistInformation getPlaylistInformation(){
-//
-//        return null;
-//    }
 
 
 }
