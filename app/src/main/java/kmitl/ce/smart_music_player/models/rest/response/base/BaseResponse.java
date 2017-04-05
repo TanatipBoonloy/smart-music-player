@@ -1,4 +1,4 @@
-package kmitl.ce.smart_music_player.model.response.base;
+package kmitl.ce.smart_music_player.models.rest.response.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

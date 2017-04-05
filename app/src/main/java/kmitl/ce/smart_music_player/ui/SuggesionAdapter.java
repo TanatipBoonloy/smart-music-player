@@ -16,7 +16,7 @@
 //
 //import io.realm.Realm;
 //import kmitl.ce.smart_music_player.R;
-//import kmitl.ce.smart_music_player.utility.NameDisplayUtility;
+//import kmitl.ce.smart_music_player.utility.StringEditorUtil;
 //
 ///**
 // * Created by Dell on 23/3/2560.
@@ -33,7 +33,7 @@
 //
 //    @Override
 //    public PlaylistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.suggesion_song_card, null);
+//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_suggesion_music, null);
 //
 //        SuggesionAdapter.PlaylistViewHolder vh = new SuggesionAdapter.PlaylistViewHolder(view);
 //        return vh;
@@ -55,8 +55,8 @@
 //                .get(position);
 //
 //
-//        holder.textView.setText(NameDisplayUtility.subStringTitle(setTextModified(realmMusic.getTitle()), 2));
-////        holder.textView.setText(NameDisplayUtility.subStringTitle(musicInformationList.get(position).getTitle(), 2));
+//        holder.textView.setText(StringEditorUtil.subStringMusicTitle(setTextModified(realmMusic.getTitle()), 2));
+////        holder.textView.setText(StringEditorUtil.subStringMusicTitle(musicInformationList.get(position).getTitle(), 2));
 //        //holder.likeButton.setText("Like");
 //
 ////        int rIndex = musicInformationList.get(position).getRealmIndex();

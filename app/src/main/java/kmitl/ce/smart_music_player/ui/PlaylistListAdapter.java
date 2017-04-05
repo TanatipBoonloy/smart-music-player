@@ -23,8 +23,8 @@
 //
 //import io.realm.Realm;
 //import kmitl.ce.smart_music_player.R;
-//import kmitl.ce.smart_music_player.entity.RealmPlaylistInformation;
-//import kmitl.ce.smart_music_player.utility.NameDisplayUtility;
+//import kmitl.ce.smart_music_player.model.realm.RealmPlaylists;
+//import kmitl.ce.smart_music_player.utility.StringEditorUtil;
 //
 //
 //public class PlaylistListAdapter extends RecyclerView.Adapter<PlaylistListAdapter.PlaylistViewHolder> {
@@ -54,7 +54,7 @@
 //
 //    @Override
 //    public PlaylistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.playlist_card, null);
+//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_playlist, null);
 //
 //        PlaylistViewHolder vh = new PlaylistViewHolder(view);
 //        return vh;
@@ -74,10 +74,10 @@
 ////        RealmMusicInformation realmPlaylist = realm.where(RealmMusicInformation.class)
 ////                .findAll()
 ////                .get(position);
-//        RealmPlaylistInformation realmPlaylist = realm.where(RealmPlaylistInformation.class) .findAll().get(position);
+//        RealmPlaylists realmPlaylist = realm.where(RealmPlaylists.class) .findAll().get(position);
 //
 //
-//        holder.textView.setText(NameDisplayUtility.subStringTitle(realmPlaylist.getPlaylistName(), 2));
+//        holder.textView.setText(StringEditorUtil.subStringMusicTitle(realmPlaylist.getPlaylistName(), 2));
 //
 //
 ////        byte[] thumbnail = musicInformationList.get(position).getThumbnail();
@@ -111,7 +111,7 @@
 ////
 ////                int position = musicViewHolder.getAdapterPosition();
 ////
-////                RealmPlaylistInformation obj= realm.where(RealmPlaylistInformation.class)
+////                RealmPlaylists obj= realm.where(RealmPlaylists.class)
 ////                        .findAll()
 ////                        .get(position);
 //
@@ -133,7 +133,7 @@
 //    public int getItemCount() {
 //
 ////        return obj.getPlaylists().length;
-//        return realm.where(RealmPlaylistInformation.class).findAll().size();
+//        return realm.where(RealmPlaylists.class).findAll().size();
 //    }
 //
 //    public static class PlaylistViewHolder extends RecyclerView.ViewHolder {

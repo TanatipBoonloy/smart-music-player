@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@color/colorBackground"
     android:clipToPadding="false"
-    tools:context="kmitl.ce.smart_music_player.ui.MainActivity">
+    tools:context="kmitl.ce.smart_music_player.ui.activities.MainActivity">
 
     <LinearLayout
         android:id="@+id/playlist_fragment_container"

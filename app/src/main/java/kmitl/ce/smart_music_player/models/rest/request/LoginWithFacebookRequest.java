@@ -1,4 +1,4 @@
-package kmitl.ce.smart_music_player.model.request;
+package kmitl.ce.smart_music_player.models.rest.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -1,35 +1,28 @@
-package kmitl.ce.smart_music_player.ui;
+package kmitl.ce.smart_music_player.ui.activities;
 
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
 import com.facebook.login.LoginManager;
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -37,13 +30,14 @@ import java.util.Collections;
 import java.util.List;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
-import io.realm.Realm;
 import kmitl.ce.smart_music_player.R;
-import kmitl.ce.smart_music_player.model.response.MusicResponse;
-import kmitl.ce.smart_music_player.model.response.base.BaseResponse;
-import kmitl.ce.smart_music_player.rest.ApiClient;
-import kmitl.ce.smart_music_player.rest.ApiInterface;
-import kmitl.ce.smart_music_player.utility.NameDisplayUtility;
+import kmitl.ce.smart_music_player.models.Music;
+import kmitl.ce.smart_music_player.models.rest.response.base.BaseResponse;
+import kmitl.ce.smart_music_player.network.ApiClient;
+import kmitl.ce.smart_music_player.network.ApiInterface;
+import kmitl.ce.smart_music_player.ui.fragments.MusicsFragment;
+import kmitl.ce.smart_music_player.ui.fragments.MusicPlayerFragment;
+import kmitl.ce.smart_music_player.utils.StringEditorUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -61,13 +55,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<Integer> normalIndexList;
     private List<Integer> activeIndexList;
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
-    private List<MusicResponse> musicList;
+    private List<Music> musicList;
 
     // ui variable
     private ImageButton musicPlayingButton;
     private SegmentedGroup segment;
     //    private PlaylistFragment playlsitFragment;
-    private MusicListFragment recycleFragment;
+    private MusicsFragment recycleFragment;
 //    private SuggesionFragment recycleSuggesion;
 //    private SearchFragment searchFragment;
     private String TYPE_ACTIVITY = "TYPE_ACTIVITY";
@@ -77,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_playlist);
+        setContentView(R.layout.activity_main);
 
         this.getMusicList();
     }
@@ -96,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         musicPlayingButton.setMaxWidth((new DisplayMetrics().widthPixels) * 30 / 100);
 
 //        this.playlsitFragment = new PlaylistFragment();
-        this.recycleFragment = MusicListFragment.newInstance(musicList);
+        this.recycleFragment = MusicsFragment.newInstance(musicList);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         //set visible suggesion fragment
@@ -147,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    df.show(getSupportFragmentManager(), "musicPlayingDialog");
                 } else {
                     LoginManager.getInstance().logOut();
-                    Intent i = new Intent(getApplicationContext(), Login.class);
+                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(i);
                     finish();
                 }
@@ -204,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void play() {
-        MusicResponse music = getMusic();
+        Music music = getMusic();
         mediaPlayer.reset();
         mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -234,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
         musicPlayingTitle.setWidth((screenWidth) * 70 / 100);
 
-        musicPlayingTitle.setText(NameDisplayUtility.subStringTitle(getMusic().getName(), 0));
+        musicPlayingTitle.setText(StringEditorUtil.subStringMusicTitle(getMusic().getName(), 0));
 
         Toolbar musicPlayingBar = (Toolbar) findViewById(R.id.music_list_playing);
         setSupportActionBar(musicPlayingBar);
@@ -295,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return musicPlayingButton;
     }
 
-    public MusicResponse getMusic() {
+    public Music getMusic() {
         return (this.currentSongPlaying != null) ? musicList.get(currentSongPlaying) : null;
     }
 
@@ -347,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void updateSongName() {
         TextView musicPlayingTitle = (TextView) findViewById(R.id.music_playing_title);
-        musicPlayingTitle.setText(NameDisplayUtility.subStringTitle(getMusic().getName(), 0));
+        musicPlayingTitle.setText(StringEditorUtil.subStringMusicTitle(getMusic().getName(), 0));
     }
 
     @Override
@@ -365,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void songsButton(SegmentedGroup group) {
-        this.recycleFragment = MusicListFragment.newInstance(musicList);
+        this.recycleFragment = MusicsFragment.newInstance(musicList);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 //        transaction.remove(this.playlsitFragment);
         transaction.replace(R.id.contentFragment, this.recycleFragment);
@@ -412,10 +406,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void getRandomSong() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-        Call<BaseResponse<List<MusicResponse>>> call = apiService.getRandomSong(20);
-        call.enqueue(new Callback<BaseResponse<List<MusicResponse>>>() {
+        Call<BaseResponse<List<Music>>> call = apiService.getRandomSong(20);
+        call.enqueue(new Callback<BaseResponse<List<Music>>>() {
             @Override
-            public void onResponse(Call<BaseResponse<List<MusicResponse>>> call, Response<BaseResponse<List<MusicResponse>>> response) {
+            public void onResponse(Call<BaseResponse<List<Music>>> call, Response<BaseResponse<List<Music>>> response) {
                 if (response.isSuccessful()) {
                     musicList = response.body().getData();
                     setUpActivity();
@@ -423,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             @Override
-            public void onFailure(Call<BaseResponse<List<MusicResponse>>> call, Throwable t) {
+            public void onFailure(Call<BaseResponse<List<Music>>> call, Throwable t) {
 
             }
         });

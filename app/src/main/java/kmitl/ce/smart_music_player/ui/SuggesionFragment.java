@@ -28,7 +28,7 @@
 //    }
 //
 //    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        final View rootView = inflater.inflate(R.layout.suggesion_recycle_music, container, false);
+//        final View rootView = inflater.inflate(R.layout.fragment_suggesion_music, container, false);
 //
 //        this.mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
 ////        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));

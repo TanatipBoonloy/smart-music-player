@@ -26,7 +26,7 @@
 //import io.realm.Realm;
 //import io.realm.RealmList;
 //import kmitl.ce.smart_music_player.R;
-//import kmitl.ce.smart_music_player.entity.RealmPlaylistInformation;
+//import kmitl.ce.smart_music_player.model.realm.RealmPlaylists;
 //
 ///**
 // * Created by Dell on 23/3/2560.
@@ -34,7 +34,7 @@
 //
 //public class PlaylistMenuFragment extends DialogFragment {
 //
-//    private static RealmPlaylistInformation playlistInformation;
+//    private static RealmPlaylists playlistInformation;
 //    private static RealmList<RealmMusicInformation> musicList;
 //    private Button suffleButton;
 //    private ImageView imageView;
@@ -45,7 +45,7 @@
 //
 //
 //
-//    public static PlaylistMenuFragment newInstance(RealmPlaylistInformation obj, RealmList<RealmMusicInformation> musiclist) {
+//    public static PlaylistMenuFragment newInstance(RealmPlaylists obj, RealmList<RealmMusicInformation> musiclist) {
 //        PlaylistMenuFragment fragment = new PlaylistMenuFragment();
 //        fragment.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme );
 //        playlistInformation=obj;
@@ -85,7 +85,7 @@
 //    @Override
 //    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 ////        return super.onCreateView(inflater, container, savedInstanceState);
-//        final View rootView = inflater.inflate(R.layout.manage_playlist, container, false);
+//        final View rootView = inflater.inflate(R.layout.frament_playlist_detail, container, false);
 //
 //
 //        ImageButton backBtn = (ImageButton) rootView.findViewById(R.id.back);

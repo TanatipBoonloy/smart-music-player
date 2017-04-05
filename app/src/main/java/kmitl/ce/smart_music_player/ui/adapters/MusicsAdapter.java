@@ -1,4 +1,4 @@
-package kmitl.ce.smart_music_player.ui;
+package kmitl.ce.smart_music_player.ui.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,24 +16,25 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import kmitl.ce.smart_music_player.R;
-import kmitl.ce.smart_music_player.model.response.MusicResponse;
-import kmitl.ce.smart_music_player.utility.NameDisplayUtility;
+import kmitl.ce.smart_music_player.models.Music;
+import kmitl.ce.smart_music_player.ui.activities.MainActivity;
+import kmitl.ce.smart_music_player.utils.StringEditorUtil;
 
 /**
  * Created by Jo on 8/16/2016.
  */
-public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.MusicViewHolder> {
+public class MusicsAdapter extends RecyclerView.Adapter<MusicsAdapter.MusicViewHolder> {
     private Context mContext;
-    private List<MusicResponse> musicList;
+    private List<Music> musicList;
 
-    public MusicListAdapter(Context context, List<MusicResponse> musicList) {
+    public MusicsAdapter(Context context, List<Music> musicList) {
         this.mContext = context;
         this.musicList = musicList;
     }
 
     @Override
     public MusicViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.music_card, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_musics, null);
 
         MusicViewHolder vh = new MusicViewHolder(view);
         return vh;
@@ -49,10 +50,10 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
         holder.textView.setWidth((screenWidth) * 80 / 100);
         holder.imageView.setMaxWidth((screenWidth) * 20 / 100);
 
-        MusicResponse music = musicList.get(position);
+        Music music = musicList.get(position);
 
-        holder.textView.setText(NameDisplayUtility.subStringTitle(music.getName(), 2));
-        holder.artistName.setText(NameDisplayUtility.subStringTitle(music.getArtist(), 2));
+        holder.textView.setText(StringEditorUtil.subStringMusicTitle(music.getName(), 2));
+        holder.artistName.setText(StringEditorUtil.subStringMusicTitle(music.getArtist(), 2));
 
 //        byte[] thumbnail = realmMusic.getThumnail();
 //        if (thumbnail != null) {

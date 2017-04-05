@@ -1,4 +1,4 @@
-package kmitl.ce.smart_music_player.rest;
+package kmitl.ce.smart_music_player.network;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

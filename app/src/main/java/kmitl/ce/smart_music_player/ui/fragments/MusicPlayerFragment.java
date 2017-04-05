@@ -1,14 +1,10 @@
-package kmitl.ce.smart_music_player.ui;
+package kmitl.ce.smart_music_player.ui.fragments;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -21,24 +17,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
-
 import kmitl.ce.smart_music_player.R;
-import kmitl.ce.smart_music_player.model.response.MusicResponse;
+import kmitl.ce.smart_music_player.models.Music;
+import kmitl.ce.smart_music_player.ui.activities.MainActivity;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Jo on 8/16/2016.
  */
 public class MusicPlayerFragment extends DialogFragment {
     // model variable
-    MusicResponse music;
+    Music music;
 
 
     // ui variable
@@ -52,7 +42,7 @@ public class MusicPlayerFragment extends DialogFragment {
     private ImageButton repeatButton;
 
 
-    public static MusicPlayerFragment newInstance(MusicResponse music) {
+    public static MusicPlayerFragment newInstance(Music music) {
         MusicPlayerFragment fragment = new MusicPlayerFragment();
         fragment.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme);
         fragment.setMusic(music);
@@ -62,7 +52,7 @@ public class MusicPlayerFragment extends DialogFragment {
     public MusicPlayerFragment() {
     }
 
-    public void setMusic(MusicResponse music) {
+    public void setMusic(Music music) {
         this.music = music;
     }
 
@@ -89,7 +79,7 @@ public class MusicPlayerFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.music_playing_fragment, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_music_player, container, false);
 
         this.mediaPlayer = ((MainActivity) getActivity()).getMediaPlayer();
 

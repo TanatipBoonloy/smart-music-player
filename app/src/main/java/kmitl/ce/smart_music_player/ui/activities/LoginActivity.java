@@ -1,4 +1,4 @@
-package kmitl.ce.smart_music_player.ui;
+package kmitl.ce.smart_music_player.ui.activities;
 
 
 import android.content.Intent;
@@ -8,16 +8,15 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.Toast;
 
 import kmitl.ce.smart_music_player.R;
-import kmitl.ce.smart_music_player.model.request.LoginWithFacebookRequest;
-import kmitl.ce.smart_music_player.model.response.UserResponse;
-import kmitl.ce.smart_music_player.model.response.base.BaseResponse;
-import kmitl.ce.smart_music_player.rest.ApiClient;
-import kmitl.ce.smart_music_player.rest.ApiInterface;
+import kmitl.ce.smart_music_player.models.rest.request.LoginWithFacebookRequest;
+import kmitl.ce.smart_music_player.models.rest.response.UserResponse;
+import kmitl.ce.smart_music_player.models.rest.response.base.BaseResponse;
+import kmitl.ce.smart_music_player.network.ApiClient;
+import kmitl.ce.smart_music_player.network.ApiInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,11 +29,8 @@ import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.gson.Gson;
 
-import static android.app.PendingIntent.getActivity;
-
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
 
     private LoginButton loginButton;
@@ -53,7 +49,7 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.login);
+        setContentView(R.layout.activity_login);
         appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefsEditor = appSharedPrefs.edit();
 
@@ -94,7 +90,7 @@ public class Login extends AppCompatActivity {
 
         }
 
-        // Callback registration -- First login with facebook
+        // Callback registration -- First activity_login with facebook
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -105,7 +101,7 @@ public class Login extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                Toast.makeText(getApplicationContext(), "Login cancel", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "LoginActivity cancel", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -113,7 +109,7 @@ public class Login extends AppCompatActivity {
                 String title = getString(R.string.error);
                 String alertMessage = exception.getMessage();
                 showResult(title, alertMessage);
-                Toast.makeText(getApplicationContext(), "Login Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "LoginActivity Error", Toast.LENGTH_SHORT).show();
             }
         });
 

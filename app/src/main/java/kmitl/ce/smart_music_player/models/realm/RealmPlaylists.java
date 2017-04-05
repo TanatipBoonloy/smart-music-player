@@ -1,6 +1,4 @@
-package kmitl.ce.smart_music_player.entity;
-
-import java.util.ArrayList;
+package kmitl.ce.smart_music_player.models.realm;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -9,7 +7,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by Dell on 25/3/2560.
  */
 
-public class RealmPlaylistInformation extends RealmObject {
+public class RealmPlaylists extends RealmObject {
 
     @PrimaryKey
     private int id;

@@ -1,4 +1,4 @@
-package kmitl.ce.smart_music_player.service;
+package kmitl.ce.smart_music_player.manager;
 
 import android.content.Context;
 
@@ -6,24 +6,24 @@ import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import kmitl.ce.smart_music_player.entity.RealmPlaylistInformation;
+import kmitl.ce.smart_music_player.models.realm.RealmPlaylists;
 
 /**
  * Created by Dell on 25/3/2560.
  */
 
-public class ManagePlaylistRealm {
+public class PlaylistsManager {
     private Context mContext;
     Realm realm;
 
-    public ManagePlaylistRealm(Context context,Realm realm){
+    public PlaylistsManager(Context context, Realm realm){
         this.realm=realm;
         this.mContext=context;
     }
 
     public void getAllPlaylist()
     {
-        if(realm.where(RealmPlaylistInformation.class).count() > 0) {
+        if(realm.where(RealmPlaylists.class).count() > 0) {
 
         }
     }
@@ -33,8 +33,8 @@ public class ManagePlaylistRealm {
     public ArrayList<String> retrieve()
     {
         ArrayList<String> playlistNames=new ArrayList<>();
-        RealmResults<RealmPlaylistInformation> playlists=realm.where(RealmPlaylistInformation.class).findAll();
-        for(RealmPlaylistInformation s:playlists)
+        RealmResults<RealmPlaylists> playlists=realm.where(RealmPlaylists.class).findAll();
+        for(RealmPlaylists s:playlists)
         {
             playlistNames.add(s.getPlaylistName());
         }

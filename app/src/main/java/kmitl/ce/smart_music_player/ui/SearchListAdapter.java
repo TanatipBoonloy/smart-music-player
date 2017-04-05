@@ -16,7 +16,7 @@
 //
 //import io.realm.Realm;
 //import kmitl.ce.smart_music_player.R;
-//import kmitl.ce.smart_music_player.utility.NameDisplayUtility;
+//import kmitl.ce.smart_music_player.utility.StringEditorUtil;
 //
 ///**
 // * Created by Jo on 8/16/2016.
@@ -32,7 +32,7 @@
 //
 //    @Override
 //    public MusicViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.music_card, null);
+//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_musics, null);
 //
 //        MusicViewHolder vh = new MusicViewHolder(view);
 //        return vh;
@@ -53,8 +53,8 @@
 //                .findAll()
 //                .get(position);
 //
-//        holder.textView.setText(NameDisplayUtility.subStringTitle(realmMusic.getTitle(), 2));
-////        holder.textView.setText(NameDisplayUtility.subStringTitle(musicInformationList.get(position).getTitle(), 2));
+//        holder.textView.setText(StringEditorUtil.subStringMusicTitle(realmMusic.getTitle(), 2));
+////        holder.textView.setText(StringEditorUtil.subStringMusicTitle(musicInformationList.get(position).getTitle(), 2));
 //        //holder.likeButton.setText("Like");
 //
 ////        int rIndex = musicInformationList.get(position).getRealmIndex();

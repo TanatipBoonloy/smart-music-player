@@ -20,7 +20,7 @@
 //import io.realm.RealmList;
 //import io.realm.RealmQuery;
 //import kmitl.ce.smart_music_player.R;
-//import kmitl.ce.smart_music_player.entity.RealmPlaylistInformation;
+//import kmitl.ce.smart_music_player.model.realm.RealmPlaylists;
 //
 ///**
 // * Created by Dell on 22/3/2560.
@@ -44,7 +44,7 @@
 //
 //        int position = playlistViewHolder.getAdapterPosition();
 //
-//        RealmPlaylistInformation realmPlaylistInformation= realm.where(RealmPlaylistInformation.class)
+//        RealmPlaylists realmPlaylistInformation= realm.where(RealmPlaylists.class)
 //                .findAll()
 //                .get(position);
 //
@@ -69,7 +69,7 @@
 //    }
 //
 //    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        final View rootView = inflater.inflate(R.layout.playlist_fragment, container, false);
+//        final View rootView = inflater.inflate(R.layout.fragment_playlist, container, false);
 //        this.realm = Realm.getDefaultInstance();
 //
 ////        try {
@@ -163,13 +163,13 @@
 ////        System.out.println("Playlistsssss  "+PutJsonAllPlaylist);
 ////        System.out.println("Playlist Information  "+ PutJsonPlaylistInformation);
 //
-//        final RealmQuery<RealmPlaylistInformation> query = realm.where(RealmPlaylistInformation.class);
+//        final RealmQuery<RealmPlaylists> query = realm.where(RealmPlaylists.class);
 //
 //        realm.executeTransaction(new Realm.Transaction() {
 //            @Override
 //            public void execute(Realm r) {
 //
-//                RealmPlaylistInformation rmif = r.createObject(RealmPlaylistInformation.class, query.findAll().size());
+//                RealmPlaylists rmif = r.createObject(RealmPlaylists.class, query.findAll().size());
 //                rmif.setPlaylistName(str);
 ////                            rmif.setSongs(obj.getSongs());
 ////                System.out.println("Realm Build Playlist Information  ");

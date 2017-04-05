@@ -1,12 +1,12 @@
-package kmitl.ce.smart_music_player.utility;
+package kmitl.ce.smart_music_player.utils;
 
 /**
  * Created by Administrator on September 27,2016.
  */
 
-public class NameDisplayUtility {
+public class StringEditorUtil {
 
-    public static String subStringTitle(String str, int type) {
+    public static String subStringMusicTitle(String str, int type) {
         if (type == 0) {//mRecycle
             if (str.length() > 28) {
                 return str.substring(0, 28) + "...";

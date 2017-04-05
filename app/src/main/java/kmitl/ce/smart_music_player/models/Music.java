@@ -1,4 +1,4 @@
-package kmitl.ce.smart_music_player.model.response;
+package kmitl.ce.smart_music_player.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -8,7 +8,7 @@ import lombok.Data;
  * Created by Jo on 4/4/2017.
  */
 @Data
-public class MusicResponse {
+public class Music {
     @JsonProperty("song_id")
     private String song_id;
 
