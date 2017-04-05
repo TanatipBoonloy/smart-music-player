@@ -15,19 +15,22 @@
 //import com.squareup.picasso.Picasso;
 //
 //import io.realm.Realm;
+//import io.realm.RealmList;
 //import kmitl.ce.smart_music_player.R;
 //import kmitl.ce.smart_music_player.utility.NameDisplayUtility;
 //
 ///**
 // * Created by Jo on 8/16/2016.
 // */
-//public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.MusicViewHolder> {
+//public class PlaylistMenuAdapter extends RecyclerView.Adapter<PlaylistMenuAdapter.MusicViewHolder> {
 //    private Context mContext;
 //    private Realm realm;
+//    private RealmList<RealmMusicInformation> _contents;
 //
-//    public SearchListAdapter(Context context, Realm realm) {
+//    public PlaylistMenuAdapter(Context context, Realm realm, RealmList<RealmMusicInformation> contents) {
 //        this.mContext = context;
 //        this.realm = realm;
+//        this._contents = contents;
 //    }
 //
 //    @Override
@@ -49,9 +52,7 @@
 //        holder.imageView.setMaxWidth((screenWidth) * 20 / 100);
 //        //holder.likeButton.setWidth(screenWidth * 20 / 100);
 //
-//        RealmMusicInformation realmMusic = realm.where(RealmMusicInformation.class)
-//                .findAll()
-//                .get(position);
+//        RealmMusicInformation realmMusic = _contents.get(position);
 //
 //        holder.textView.setText(NameDisplayUtility.subStringTitle(realmMusic.getTitle(), 2));
 ////        holder.textView.setText(NameDisplayUtility.subStringTitle(musicInformationList.get(position).getTitle(), 2));
@@ -99,7 +100,8 @@
 //                int position = musicViewHolder.getAdapterPosition();
 //
 ////                Toast.makeText(mContext,musicInformationList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
-//                ((MainActivity) mContext).playSong(position);
+//                ((MainActivity) mContext).playSong(_contents.get(position).getId()-1);
+//                System.out.println(" id play :"+_contents.get(position).getId());
 //            }
 //        };
 //
@@ -139,7 +141,7 @@
 //
 //    @Override
 //    public int getItemCount() {
-//        return 1;
+//        return _contents.size();
 //    }
 //
 //    public static class MusicViewHolder extends RecyclerView.ViewHolder {

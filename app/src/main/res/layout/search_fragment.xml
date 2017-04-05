@@ -9,7 +9,7 @@
     android:minWidth="10000dp"
     android:background="@color/colorBackground"
     android:clipToPadding="false"
-    tools:context="kmitl.ce.smart_music_player.ui.PlaylistActivity">
+    tools:context="kmitl.ce.smart_music_player.ui.MainActivity">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

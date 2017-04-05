@@ -2,9 +2,6 @@ package kmitl.ce.smart_music_player.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -18,23 +15,20 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
 import kmitl.ce.smart_music_player.R;
-import kmitl.ce.smart_music_player.entity.RealmMusicInformation;
-import kmitl.ce.smart_music_player.model.MusicInformation;
-import kmitl.ce.smart_music_player.service.Utility;
+import kmitl.ce.smart_music_player.model.response.MusicResponse;
+import kmitl.ce.smart_music_player.utility.NameDisplayUtility;
 
 /**
  * Created by Jo on 8/16/2016.
  */
 public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.MusicViewHolder> {
     private Context mContext;
-    private Realm realm;
+    private List<MusicResponse> musicList;
 
-    public MusicListAdapter(Context context, Realm realm) {
+    public MusicListAdapter(Context context, List<MusicResponse> musicList) {
         this.mContext = context;
-        this.realm = realm;
+        this.musicList = musicList;
     }
 
     @Override
@@ -54,40 +48,24 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
         int screenWidth = displaymetrics.widthPixels;
         holder.textView.setWidth((screenWidth) * 80 / 100);
         holder.imageView.setMaxWidth((screenWidth) * 20 / 100);
-        //holder.likeButton.setWidth(screenWidth * 20 / 100);
 
-        RealmMusicInformation realmMusic = realm.where(RealmMusicInformation.class)
-                .findAll()
-                .get(position);
+        MusicResponse music = musicList.get(position);
 
-        holder.textView.setText(Utility.subStringTitle(realmMusic.getTitle(), 2));
-        holder.artistName.setText(Utility.subStringTitle(realmMusic.getTitle(), 2));
-//        holder.textView.setText(Utility.subStringTitle(musicInformationList.get(position).getTitle(), 2));
-        //holder.likeButton.setText("Like");
+        holder.textView.setText(NameDisplayUtility.subStringTitle(music.getName(), 2));
+        holder.artistName.setText(NameDisplayUtility.subStringTitle(music.getArtist(), 2));
 
-//        int rIndex = musicInformationList.get(position).getRealmIndex();
-//        RealmResults<RealmMusicInformation> result = realm.where(RealmMusicInformation.class)
-//                .equalTo("id", rIndex)
-//                .findAll();
-//        RealmMusicInformation realmMusic = result.get(0);
-//        if (realmMusic.getLike() == null) {
-//            holder.likeButton.setBackgroundColor(Color.parseColor("#2E2EFE"));
-//        } else if (realmMusic.getLike()) {
-//            holder.likeButton.setBackgroundColor(Color.parseColor("#A9D0F5"));
+//        byte[] thumbnail = realmMusic.getThumnail();
+//        if (thumbnail != null) {
+//            Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
+////            holder.imageView.setImageBitmap(bitmap);
+//            int sizePx = convertDpToPixel(50);
+//            holder.imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, sizePx, sizePx, false));
 //        } else {
-//            holder.likeButton.setBackgroundColor(Color.parseColor("#F78181"));
+//            Picasso.with(mContext).load(R.drawable.musical_note).into(holder.imageView);
 //        }
 
-//        byte[] thumbnail = musicInformationList.get(position).getThumbnail();
-        byte[] thumbnail = realmMusic.getThumnail();
-        if (thumbnail != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
-//            holder.imageView.setImageBitmap(bitmap);
-            int sizePx = convertDpToPixel(50);
-            holder.imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, sizePx, sizePx, false));
-        } else {
-            Picasso.with(mContext).load(R.drawable.musical_note).into(holder.imageView);
-        }
+        Picasso.with(mContext).load(R.drawable.musical_note).into(holder.imageView);
+
 //        Picasso.with(mContext).load(bitmap)
 //                .error(R.drawable.musical_note)
 //                .placeholder(R.drawable.musical_note)
@@ -99,67 +77,32 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
         holder.imageView.setTag(holder);
         holder.artistName.setTag(holder);
         holder.all.setTag(holder);
-        //holder.likeButton.setTag(holder);
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MusicViewHolder musicViewHolder = (MusicViewHolder) v.getTag();
-
                 int position = musicViewHolder.getAdapterPosition();
-
-//                Toast.makeText(mContext,musicInformationList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
-                ((PlaylistActivity) mContext).playSong(position);
+                ((MainActivity) mContext).playSong(position);
             }
         };
-
-//        View.OnClickListener onLikeBtn = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                MusicViewHolder musicViewHolder = (MusicViewHolder) v.getTag();
-//
-//                int position = musicViewHolder.getAdapterPosition();
-//
-//                int rIndex = musicInformationList.get(position).getRealmIndex();
-//                RealmResults<RealmMusicInformation> result = realm.where(RealmMusicInformation.class)
-//                        .equalTo("id", rIndex)
-//                        .findAll();
-//                RealmMusicInformation realmMusic = result.get(0);
-//                Boolean oldValue = realmMusic.getLike();
-//                realm.beginTransaction();
-//                if (oldValue == null) {
-//                    realmMusic.setLike(true);
-//                } else if (oldValue) {
-//                    realmMusic.setLike(false);
-//                } else {
-//                    realmMusic.setLike(null);
-//                }
-//                realm.commitTransaction();
-//
-//                notifyItemChanged(position);
-//            }
-//        };
 
         holder.textView.setOnClickListener(onClickListener);
         holder.imageView.setOnClickListener(onClickListener);
         holder.artistName.setOnClickListener(onClickListener);
         holder.all.setOnClickListener(onClickListener);
-        //holder.likeButton.setOnClickListener(onLikeBtn);
-
-
     }
 
     @Override
     public int getItemCount() {
-        return (int) this.realm.where(RealmMusicInformation.class).count();
+        return musicList.size();
     }
 
-    public static class MusicViewHolder extends RecyclerView.ViewHolder {
+    static class MusicViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
         public TextView textView;
         public TextView artistName;
         public RelativeLayout all;
-        //public Button likeButton;
 
         public MusicViewHolder(View view) {
             super(view);
@@ -167,13 +110,12 @@ public class MusicListAdapter extends RecyclerView.Adapter<MusicListAdapter.Musi
             this.textView = (TextView) view.findViewById(R.id.music_title);
             this.artistName = (TextView ) view.findViewById(R.id.music_artist);
             this.all = (RelativeLayout) view.findViewById(R.id.all);
-            //this.likeButton = (Button) view.findViewById(R.id.like_button);
         }
     }
 
-    private int convertDpToPixel(int dp) {
-        DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-        int px = (int) (dp * (metrics.densityDpi / 160f));
-        return px;
-    }
+//    private int convertDpToPixel(int dp) {
+//        DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+//        int px = (int) (dp * (metrics.densityDpi / 160f));
+//        return px;
+//    }
 }

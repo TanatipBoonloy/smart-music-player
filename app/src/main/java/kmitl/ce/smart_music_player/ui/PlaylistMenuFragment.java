@@ -1,10 +1,8 @@
 //package kmitl.ce.smart_music_player.ui;
 //
-///**
-// * Created by Dell on 25/3/2560.
-// */
-//
 //import android.app.Dialog;
+//import android.graphics.Bitmap;
+//import android.graphics.BitmapFactory;
 //import android.graphics.Color;
 //import android.graphics.drawable.ColorDrawable;
 //import android.os.Bundle;
@@ -17,29 +15,41 @@
 //import android.view.View;
 //import android.view.ViewGroup;
 //import android.view.Window;
-//import android.widget.EditText;
+//import android.widget.Button;
+//import android.widget.ImageButton;
 //import android.widget.ImageView;
 //import android.widget.RelativeLayout;
+//import android.widget.TextView;
+//
+//import com.squareup.picasso.Picasso;
 //
 //import io.realm.Realm;
+//import io.realm.RealmList;
 //import kmitl.ce.smart_music_player.R;
+//import kmitl.ce.smart_music_player.entity.RealmPlaylistInformation;
 //
 ///**
 // * Created by Dell on 23/3/2560.
 // */
 //
-//public class SearchFragment extends DialogFragment {
+//public class PlaylistMenuFragment extends DialogFragment {
 //
+//    private static RealmPlaylistInformation playlistInformation;
+//    private static RealmList<RealmMusicInformation> musicList;
+//    private Button suffleButton;
 //    private ImageView imageView;
+//    private TextView playlistName;
 //    private RecyclerView mRecyclerView;
 //    private RecyclerView.Adapter mAdapter;
 //    private Realm realm;
-//    private EditText searchBar;
 //
 //
-//    public static PlaylistMenuFragment newInstance() {
+//
+//    public static PlaylistMenuFragment newInstance(RealmPlaylistInformation obj, RealmList<RealmMusicInformation> musiclist) {
 //        PlaylistMenuFragment fragment = new PlaylistMenuFragment();
 //        fragment.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme );
+//        playlistInformation=obj;
+//        musicList=musiclist;
 //        return fragment;
 //    }
 //
@@ -75,10 +85,10 @@
 //    @Override
 //    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 ////        return super.onCreateView(inflater, container, savedInstanceState);
-//        final View rootView = inflater.inflate(R.layout.search_fragment, container, false);
+//        final View rootView = inflater.inflate(R.layout.manage_playlist, container, false);
 //
 //
-//        ImageView backBtn = (ImageView) rootView.findViewById(R.id.back);
+//        ImageButton backBtn = (ImageButton) rootView.findViewById(R.id.back);
 //        backBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -89,25 +99,41 @@
 //
 //
 //        this.imageView= (ImageView) rootView.findViewById(R.id.imageView);
-//        this.mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-//        this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-//        this.mRecyclerView.setHasFixedSize(true);
-//        this.mRecyclerView.setItemViewCacheSize(100);
-//        this.mRecyclerView.setDrawingCacheEnabled(true);
-//        this.mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+//        this.playlistName=(TextView) rootView.findViewById(R.id.playlist_name);
 //
-//        this.mAdapter = new SearchListAdapter(getActivity() , this.realm);
+//        if(musicList!=null){
+//            this.mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+//            this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+//            this.mRecyclerView.setHasFixedSize(true);
+//            this.mRecyclerView.setItemViewCacheSize(100);
+//            this.mRecyclerView.setDrawingCacheEnabled(true);
+//            this.mRecyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 //
-//        this.mRecyclerView.setAdapter(this.mAdapter);
+//            this.mAdapter = new PlaylistMenuAdapter(this.getActivity() , this.realm,this.musicList);
+//
+//            this.mRecyclerView.setAdapter(this.mAdapter);
+//
+//            this.playlistName.setText(playlistInformation.getPlaylistName());
+//        }
 //
 //
-//        this.searchBar = (EditText) rootView.findViewById(R.id.search_bar);
-//
+//        setUpPlaylistCustomView();
 //
 //        return rootView;
 //    }
 //
 //
+//    private void setImageView() {
+//        //ImageView
+////        byte[] thumbnail = ((MainActivity) getActivity()).getRealmMusicInformation().getThumnail();
+//        byte[] thumbnail = playlistInformation.getThumnail();
+//        if (thumbnail != null) {
+//            Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
+//            imageView.setImageBitmap(bitmap);
+//        } else {
+//            Picasso.with(getActivity()).load(R.drawable.view_image).into(imageView);
+//        }
+//    }
 //
 //
 //    @Override
@@ -125,5 +151,8 @@
 //        super.onDestroy();
 //    }
 //
+//    private void setUpPlaylistCustomView() {
 //
+//        setImageView();
+//    }
 //}

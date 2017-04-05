@@ -19,27 +19,28 @@
 //import kmitl.ce.smart_music_player.utility.NameDisplayUtility;
 //
 ///**
-// * Created by Jo on 8/16/2016.
+// * Created by Dell on 23/3/2560.
 // */
-//public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.MusicViewHolder> {
+//
+//public class SuggesionAdapter extends RecyclerView.Adapter<SuggesionAdapter.PlaylistViewHolder> {
 //    private Context mContext;
 //    private Realm realm;
 //
-//    public SearchListAdapter(Context context, Realm realm) {
+//    public SuggesionAdapter(Context context, Realm realm) {
 //        this.mContext = context;
 //        this.realm = realm;
 //    }
 //
 //    @Override
-//    public MusicViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.music_card, null);
+//    public PlaylistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.suggesion_song_card, null);
 //
-//        MusicViewHolder vh = new MusicViewHolder(view);
+//        SuggesionAdapter.PlaylistViewHolder vh = new SuggesionAdapter.PlaylistViewHolder(view);
 //        return vh;
 //    }
 //
 //    @Override
-//    public void onBindViewHolder(final MusicViewHolder holder, int position) {
+//    public void onBindViewHolder(final SuggesionAdapter.PlaylistViewHolder holder, int position) {
 //        DisplayMetrics displaymetrics = new DisplayMetrics();
 //        ((Activity) mContext).getWindowManager()
 //                .getDefaultDisplay()
@@ -53,7 +54,8 @@
 //                .findAll()
 //                .get(position);
 //
-//        holder.textView.setText(NameDisplayUtility.subStringTitle(realmMusic.getTitle(), 2));
+//
+//        holder.textView.setText(NameDisplayUtility.subStringTitle(setTextModified(realmMusic.getTitle()), 2));
 ////        holder.textView.setText(NameDisplayUtility.subStringTitle(musicInformationList.get(position).getTitle(), 2));
 //        //holder.likeButton.setText("Like");
 //
@@ -70,7 +72,6 @@
 ////            holder.likeButton.setBackgroundColor(Color.parseColor("#F78181"));
 ////        }
 //
-////        byte[] thumbnail = musicInformationList.get(position).getThumbnail();
 //        byte[] thumbnail = realmMusic.getThumnail();
 //        if (thumbnail != null) {
 //            Bitmap bitmap = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
@@ -80,12 +81,6 @@
 //        } else {
 //            Picasso.with(mContext).load(R.drawable.musical_note).into(holder.imageView);
 //        }
-////        Picasso.with(mContext).load(bitmap)
-////                .error(R.drawable.musical_note)
-////                .placeholder(R.drawable.musical_note)
-////                .into(holder.imageView);
-////        Picasso.with(mContext).load(R.drawable.musical_note).into(holder.imageView);
-////        holder.imageView.setImageDrawable(null);
 //
 //        holder.textView.setTag(holder);
 //        holder.imageView.setTag(holder);
@@ -94,9 +89,9 @@
 //        View.OnClickListener onClickListener = new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                MusicViewHolder musicViewHolder = (MusicViewHolder) v.getTag();
+//                SuggesionAdapter.PlaylistViewHolder PlaylistViewHolder = (SuggesionAdapter.PlaylistViewHolder) v.getTag();
 //
-//                int position = musicViewHolder.getAdapterPosition();
+//                int position = PlaylistViewHolder.getAdapterPosition();
 //
 ////                Toast.makeText(mContext,musicInformationList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
 //                ((MainActivity) mContext).playSong(position);
@@ -139,15 +134,15 @@
 //
 //    @Override
 //    public int getItemCount() {
-//        return 1;
+//        return 10;
 //    }
 //
-//    public static class MusicViewHolder extends RecyclerView.ViewHolder {
+//    public static class PlaylistViewHolder extends RecyclerView.ViewHolder {
 //        public ImageView imageView;
 //        public TextView textView;
 //        //public Button likeButton;
 //
-//        public MusicViewHolder(View view) {
+//        public PlaylistViewHolder(View view) {
 //            super(view);
 //            this.imageView = (ImageView) view.findViewById(R.id.music_image);
 //            this.textView = (TextView) view.findViewById(R.id.music_title);
@@ -159,5 +154,9 @@
 //        DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
 //        int px = (int) (dp * (metrics.densityDpi / 160f));
 //        return px;
+//    }
+//
+//    private String setTextModified(String str){
+//        return str.length()>20 ? str.substring(0,20)+"..." : str;
 //    }
 //}
